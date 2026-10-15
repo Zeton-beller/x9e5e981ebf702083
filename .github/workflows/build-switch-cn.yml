@@ -4,15 +4,71 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - soh-switch-cn
       - main
+      - soh-switch-cn
       - develop
 
 jobs:
+  build-switch:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20251117
+    steps:
+      - name: Fix dubious ownership error
+        run: git config --global --add safe.directory '*'
+
+      - name: Install build tools and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt) zip
+          sudo apt-get remove -y cmake || true
+          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
+          pip install --break-system-packages cryptography
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build SoH NRO for Nintendo Switch
+        run: |
+          cmake -H. -Bbuild-switch -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1
+          cmake --build build-switch --target soh_nro --config Release -j$(nproc)
+          mv build-switch/soh/*.nro soh.nro
+
+      - name: Verify Chinese symbols in NRO
+        run: |
+          strings soh.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese not found in strings"
+          strings soh.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr not found in strings"
+
+      - name: Package Switch Chinese Release
+        run: |
+          mkdir -p switch/soh
+          cp soh.nro switch/soh/soh.nro
+          cp soh.o2r switch/soh/soh.o2r
+          cp README.md switch/soh/readme.txt
+          zip -r soh-switch-cn.zip switch/
+
+      - name: Upload Switch NRO & Full Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh-switch-cn-artifacts
+          path: |
+            soh.nro
+            soh.o2r
+            soh-switch-cn.zip
+            build-switch/soh/*.elf
+
   generate-soh-otr:
     runs-on: ubuntu-22.04
     steps:
-      - name: Git Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -53,65 +109,9 @@ jobs:
           cmake --no-warn-unused-cli -H. -Bbuild-cmake -GNinja -DCMAKE_BUILD_TYPE:STRING=Release
           cmake --build build-cmake --config Release --target GenerateSohOtr -j$(nproc)
 
-      - name: Upload soh.o2r
+      - name: Upload generated soh.o2r
         uses: actions/upload-artifact@v4
         with:
-          name: soh.o2r
+          name: soh-generated.o2r
           path: soh.o2r
           retention-days: 7
-
-  build-switch:
-    needs: generate-soh-otr
-    runs-on: ubuntu-latest
-    container:
-      image: devkitpro/devkita64:20251117
-    steps:
-      - name: Fix dubious ownership error
-        run: git config --global --add safe.directory '*'
-
-      - name: Install build tools and dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt)
-          sudo apt-get remove -y cmake || true
-          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
-          pip install --break-system-packages cryptography
-          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
-          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
-
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Build SoH for Nintendo Switch
-        run: |
-          cmake -H. -Bbuild-switch -GNinja \
-            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
-            -DCMAKE_BUILD_TYPE:STRING=Release \
-            -DBUILD_REMOTE_CONTROL=1 \
-            -DDISABLE_SCRIPTING=1
-          cmake --build build-switch --target soh_nro --config Release -j$(nproc)
-          mv build-switch/soh/*.nro soh.nro
-
-      - name: Download soh.o2r
-        uses: actions/download-artifact@v4
-        with:
-          name: soh.o2r
-
-      - name: Package Switch Chinese Release
-        run: |
-          mkdir -p switch/soh
-          cp soh.nro switch/soh/soh.nro
-          cp soh.o2r switch/soh/soh.o2r
-          cp README.md switch/soh/readme.txt
-          zip -r soh-switch-cn.zip switch/
-
-      - name: Upload Switch NRO & Package
-        uses: actions/upload-artifact@v4
-        with:
-          name: soh-switch-cn
-          path: |
-            soh.nro
-            soh.o2r
-            soh-switch-cn.zip
-            build-switch/soh/*.elf
