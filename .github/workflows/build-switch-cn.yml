@@ -1,0 +1,114 @@
+name: Build SoH Switch CN (中文版)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - soh-switch-cn
+      - main
+      - develop
+
+jobs:
+  generate-soh-otr:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y $(cat .github/workflows/apt-deps.txt) libzip-dev zipcmp zipmerge ziptool
+
+      - name: Install latest SDL2
+        run: |
+          mkdir -p deps
+          if [ ! -d "deps/SDL2-2.30.3" ]; then
+            wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.3/SDL2-2.30.3.tar.gz
+            tar -xzf SDL2-2.30.3.tar.gz -C deps
+          fi
+          cd deps/SDL2-2.30.3
+          ./configure --enable-hidapi-libusb
+          make -j$(nproc)
+          sudo make install
+          sudo cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
+
+      - name: Install latest tinyxml2
+        run: |
+          sudo apt-get remove -y libtinyxml2-dev || true
+          if [ ! -d "deps/tinyxml2-10.0.0" ]; then
+            wget https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz
+            tar -xzf 10.0.0.tar.gz -C deps
+          fi
+          cd deps/tinyxml2-10.0.0
+          mkdir -p build && cd build
+          cmake ..
+          make -j$(nproc)
+          sudo make install
+
+      - name: Generate soh.o2r (with Chinese assets)
+        run: |
+          cmake --no-warn-unused-cli -H. -Bbuild-cmake -GNinja -DCMAKE_BUILD_TYPE:STRING=Release
+          cmake --build build-cmake --config Release --target GenerateSohOtr -j$(nproc)
+
+      - name: Upload soh.o2r
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh.o2r
+          path: soh.o2r
+          retention-days: 7
+
+  build-switch:
+    needs: generate-soh-otr
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20251117
+    steps:
+      - name: Install build tools and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt)
+          sudo apt-get remove -y cmake || true
+          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
+          pip install --break-system-packages cryptography
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Build SoH for Nintendo Switch
+        run: |
+          cmake -H. -Bbuild-switch -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1
+          cmake --build build-switch --target soh_nro --config Release -j$(nproc)
+          mv build-switch/soh/*.nro soh.nro
+
+      - name: Download soh.o2r
+        uses: actions/download-artifact@v4
+        with:
+          name: soh.o2r
+
+      - name: Package Switch Chinese Release
+        run: |
+          mkdir -p switch/soh
+          cp soh.nro switch/soh/soh.nro
+          cp soh.o2r switch/soh/soh.o2r
+          cp README.md switch/soh/readme.txt
+          zip -r soh-switch-cn.zip switch/
+
+      - name: Upload Switch NRO & Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh-switch-cn
+          path: |
+            soh.nro
+            soh.o2r
+            soh-switch-cn.zip
+            build-switch/soh/*.elf
