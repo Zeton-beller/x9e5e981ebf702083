@@ -53,6 +53,8 @@ replacement = '''    PlFontData fonts_std;
 
 if target in content:
     content = content.replace(target, replacement, 1)
+    content = content.replace("    plExit();", "    // plExit(); // Kept alive for OTRGlobals CJK font merging")
+    content = content.replace("    appletSetGamePlayRecordingState(false);\n}", "    appletSetGamePlayRecordingState(false);\n    plExit();\n}")
     with open(target_file, 'w', encoding='utf-8') as f:
         f.write(content)
     print("Successfully patched SwitchImpl.cpp for Chinese font support!")

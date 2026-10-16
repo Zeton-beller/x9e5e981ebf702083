@@ -1,4 +1,4 @@
-﻿#include "OTRGlobals.h"
+#include "OTRGlobals.h"
 #include "OTRAudio.h"
 #include <algorithm>
 #include <atomic>
@@ -57,6 +57,7 @@
 #endif
 
 #ifdef __SWITCH__
+#include <switch.h>
 #include <ship/port/switch/SwitchImpl.h>
 #elif defined(__WIIU__)
 #include <ship/port/wiiu/WiiUImpl.h>
@@ -969,6 +970,50 @@ void OTRGlobals::ScaleImGui() {
     previousImGuiScaleIndex = imGuiScaleIndex;
 }
 
+static void MergeChineseGlyphs(ImFontAtlas* fonts, float size) {
+    bool mergedChinese = false;
+#ifdef __SWITCH__
+    static bool sPlInited = false;
+    static PlFontData sPlFontCn;
+    static bool sHasPlFontCn = false;
+    if (!sPlInited) {
+        plInitialize(PlServiceType_User);
+        sHasPlFontCn = R_SUCCEEDED(plGetSharedFontByType(&sPlFontCn, PlSharedFontType_ChineseSimplified));
+        sPlInited = true;
+    }
+
+    if (sHasPlFontCn && sPlFontCn.address != nullptr && sPlFontCn.size > 0) {
+        ImFontConfig cnConfig;
+        cnConfig.FontDataOwnedByAtlas = false;
+        cnConfig.MergeMode = true;
+        strcpy(cnConfig.Name, "Nintendo ChineseSimplified");
+        fonts->AddFontFromMemoryTTF(sPlFontCn.address, sPlFontCn.size, size, &cnConfig,
+                                    fonts->GetGlyphRangesChineseFull());
+        mergedChinese = true;
+    }
+#endif
+    if (!mergedChinese) {
+        try {
+            auto initDataFallback = std::make_shared<Ship::ResourceInitData>();
+            initDataFallback->Format = RESOURCE_FORMAT_BINARY;
+            initDataFallback->Type = static_cast<uint32_t>(RESOURCE_TYPE_FONT);
+            initDataFallback->ResourceVersion = 0;
+            initDataFallback->Path = "fonts/NotoSansJP-Regular.ttf";
+            auto fallbackFont = std::static_pointer_cast<Ship::Font>(
+                Ship::Context::GetInstance()->GetResourceManager()->LoadResource("fonts/NotoSansJP-Regular.ttf", false, initDataFallback));
+            if (fallbackFont && fallbackFont->Data && fallbackFont->DataSize > 0) {
+                ImFontConfig fallbackConfig;
+                fallbackConfig.FontDataOwnedByAtlas = false;
+                fallbackConfig.MergeMode = true;
+                strcpy(fallbackConfig.Name, "NotoSansCJK-Fallback");
+                fonts->AddFontFromMemoryTTF(fallbackFont->Data, fallbackFont->DataSize, size, &fallbackConfig,
+                                            fonts->GetGlyphRangesChineseFull());
+            }
+        } catch (...) {
+        }
+    }
+}
+
 ImFont* OTRGlobals::CreateDefaultFontWithSize(float size) {
     auto mImGuiIo = &ImGui::GetIO();
     ImFontConfig fontCfg = ImFontConfig();
@@ -985,6 +1030,7 @@ ImFont* OTRGlobals::CreateDefaultFontWithSize(float size) {
     iconsConfig.GlyphMinAdvanceX = iconFontSize;
     mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
                                                           &iconsConfig, sIconsRanges);
+    MergeChineseGlyphs(mImGuiIo->Fonts, size);
     return font;
 }
 
@@ -1936,6 +1982,10 @@ ImFont* OTRGlobals::CreateFontWithSize(float size, std::string fontPath, bool is
     iconsConfig.GlyphMinAdvanceX = iconFontSize;
     mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
                                                           &iconsConfig, sIconsRanges);
+    bool isStandardFont = (fontPath.find("Montserrat") != std::string::npos) || (fontPath == "");
+    if (isStandardFont) {
+        MergeChineseGlyphs(mImGuiIo->Fonts, size);
+    }
     return font;
 }
 
