@@ -1,0 +1,875 @@
+{
+  "language_name": "简体中文 (Chinese Simplified)",
+  "randomizer": {
+    "tricks": {
+      "acute_angle_clip": {
+        "name": "锐角穿模穿墙",
+        "description": "Enables locations requiring 跳斩 clips 穿透穿越 墙壁 which meet 在 acute angle."
+      },
+      "advanced_clips": {
+        "name": "高阶穿模穿墙技巧",
+        "description": "Enables locations requiring clips 穿透穿越 墙壁 与 物体 requiring 高精度 跳跃 或 other 进阶技巧."
+      },
+      "blank_a": {
+        "name": "空白 键判定",
+        "description": "Enables locations requiring 空白 键判定 button; NOTE: this 需要 'Quick Putaway' restoration."
+      },
+      "doom_jump": {
+        "name": "毁灭之跳极限远跳",
+        "description": "Enables locations requiring doom 跳跃."
+      },
+      "epg": {
+        "name": "入口点重定向Bug (EPG)",
+        "description": "Enables locations requiring use 的 入口点重定向Bug (EPG)."
+      },
+      "equip_swap": {
+        "name": "装备槽位偷换Bug",
+        "description": "Enables locations requiring use 的 装备槽位偷换Bug; NOTE: this may expect 'Allow cursor 至 be 越过 any slot' enhancement 至 be turned 弹离."
+      },
+      "equip_swap_expects_dins": {
+        "name": "装备槽位偷换Bug 需要 迪恩之火",
+        "description": "Enables locations requiring use 的 装备槽位偷换Bug once 迪恩之火 is fou第二轮."
+      },
+      "flame_storage": {
+        "name": "火焰暂存Bug",
+        "description": "Enables locations requiring 火焰暂存Bug."
+      },
+      "ground_clip": {
+        "name": "地面穿模Bug",
+        "description": "Enables locations requiring 地面 clips."
+      },
+      "hess": {
+        "name": "极速超级后滑 (HESS)",
+        "description": "Enables locations requiring Hyper Exte第二轮ed Super 滑行."
+      },
+      "hookshot_clip": {
+        "name": "钩索 穿模穿墙",
+        "description": "Enables locations requiring 钩索 clips."
+      },
+      "hookshot_jump": {
+        "name": "钩索 跳跃",
+        "description": "Enables locations requiring 钩索 跳跃."
+      },
+      "isg": {
+        "name": "无限剑Bug (ISG)",
+        "description": "Enables locations requiring use 的 infinite sword glitch."
+      },
+      "visible_collision": {
+        "name": "忽略假视觉碰撞",
+        "description": "Allows ignoring visible barriers 与 物体 that do not actually 逼停 林克 从 walking, climbing 或 hitting things, 无需 clipping. This notably allows 用于 walking 穿透穿越 Kak's 大闸门 backwards, 攀爬 落入 back 的 Impa's house as 青年期 从 coop, 与 hitting 生锈 机关开关 或 岩石巨石 穿透穿越 Blocks, Ice 与 墙壁. This trick 仅限 applies 至 case where doing thing is trivial, instances where it 仅限 works 从 certain angles are not part 的 this trick, neither are any form 的 clips, including clipping 林克's hitbox inside 岩石巨石 使用 跳斩."
+      },
+      "hookshot_ladders": {
+        "name": "钩索 木梯",
+        "description": "You can 跳过 攀爬 用于 hookshottable 木梯 can be skipped by hookshotting top 的 木梯 从 correct distance 与 angle. This is more 高难度 用于 some 木梯 than others, 与 few are not possible. Hookshotting climbable 墙壁 在...内 same way is not trick, as it is trivial 至 get angle that correctly 高台平台 grabs."
+      },
+      "grottos_without_agony": {
+        "name": "隐藏 隐藏暗洞 无需 苦恼之石",
+        "description": "Allows entering 隐藏 隐藏暗洞 无需 苦恼之石."
+      },
+      "fewer_tunic_requirements": {
+        "name": "减少要求 服饰 要求",
+        "description": "Normally 仅限 高温酷热 区域 logic expects you 至 navigate 无需 哥隆红衣 is 死亡之山火山口 与 you are not expected 至 navigate 水底水下 sections 无需 佐拉蓝衣. 使用 this trick you are expected 至 do any 水底水下 区域 except 中央 石柱, any 高温酷热 区域 except Volvagia 与 石块 抱起 房间 在...内 火之神殿 与 health needed 至 logically navigate 火山口 is decreased."
+      },
+      "unintuitive_jumps": {
+        "name": "反直觉特殊角度极限跳跃",
+        "description": "Many 高台边缘 can be overcome 使用 particular 跳跃 which are simple 至 execute 无需 道具. This includes jumping 从 heights 至 俯冲潜水 deeper 无需 scales, though this trick doesn't cover 沃特神殿 (水之神殿)'s 神龙雕像 房间."
+      },
+      "rusted_switches": {
+        "name": "麦戈顿之锤 生锈 机关开关 穿透穿越 墙壁",
+        "description": "Applies 至: - Hitting 火之神殿 Highest 哥隆 宝箱's 生锈 机关开关 在...内 SoT 石块 无需 时光之歌. - Hitting 生锈 机关开关 在...内 水之神殿 试炼房间 穿透穿越 Ice. - Hitting 大师任务 (MQ) 火之神殿 蜥蜴战士 迷宫's 生锈 机关开关 在...内 墙壁. - Having 青年期 麦戈顿之锤 岩石 在...内 西侧 侧 crawlspace 的 大师任务 (MQ) 魂之神殿 so 幼年期 can get 穿透穿越 无需 炸弹鼠. - 大师任务 (MQ) 魂之神殿 试炼房间's 生锈 机关开关 之间 thrones 无需 hitting 眼眸 靶心 至 丢下 铁甲骑士."
+      },
+      "fire_rings": {
+        "name": "火环无敌帧穿越",
+        "description": "火焰 Rings can be run 落入 处于...状态时 林克 is invincible 从 having taken 受击伤害, letting you interact 使用 some 物体 inside them such as large 宝箱"
+      },
+      "bunny_hood_jumps": {
+        "name": "兔子兜帽 跳跃",
+        "description": "Allows reaching locations 使用 兔子兜帽's exte第二轮ed 跳跃."
+      },
+      "damage_boost_simple": {
+        "name": "基础受击助跳",
+        "description": "Allows 受击伤害 boosts 在...内 order 至 到达 further locations. Can be combined 使用 \"基础悬浮鞋冲刺助跳\" 用于 reaching far distances."
+      },
+      "hover_boost_simple": {
+        "name": "基础悬浮鞋冲刺助跳",
+        "description": "Allows equipping 的 悬浮鞋 when 林克 is 移动巡逻 在 high speeds 至 exte第二轮 distance covered, often after recoil. Can be combined 使用 \"基础受击助跳\" 用于 greater uses."
+      },
+      "bombchu_beehives": {
+        "name": "炸弹鼠 蜂巢",
+        "description": "Allows exploding 蜂巢 使用 炸弹鼠."
+      },
+      "blue_fire_mud_walls": {
+        "name": "蓝火 穿过 红冰",
+        "description": "Use 蓝火 至 打破 泥墙, detonate 炸弹 flowers, 与 打破 地面 至 King 多东哥. Does not apply 至 大师任务 (MQ) 死手 (尸手鬼) 炸弹 flowers. 使用 蓝火 在...上 bombflower 至 逼停 滚石小哥隆 also 需要 \"逼停 林克 哥隆 使用 迪恩之火\". 使用 blue 火箭 至 打破 地面 在...内 King 多东哥's chamber also 需要 \"多东哥洞穴 砸开 魔王首领 大厅 地面\"."
+      },
+      "open_underwater_chest": {
+        "name": "水下免铁鞋开宝箱",
+        "description": "水底水下 宝箱 can be opened by wearing 铁鞋 与 hookshotting 宝箱."
+      },
+      "boulder_collision": {
+        "name": "碰撞漏洞 岩石巨石 物理碰撞",
+        "description": "从 afar, 岩石巨石 物理碰撞 is disabled, allowing 投射物 至 穿行通过 穿透穿越 them. Additionally, 岩石巨石 do not have projectile 物理碰撞 从下方, allow them 至 be shot 落入 在...内 some cases."
+      },
+      "item_extension": {
+        "name": "道具动作延伸Bug",
+        "description": "Slightly exte第二轮s range 的 投射物 such as 钩索, 弓箭 或 弹弓. Also allows clipping projectile 穿过 物理碰撞. Used 用于: - Retrieving DMT 黄金骷髅蜥 beside 炸弹 flower - Hitting 机关开关 穿透穿越 墙壁 在...内 魂之神殿's 大型 mirror 房间 使用 弓箭, 弹弓, 或 钩索 - Hitting 机关开关 穿透穿越 墙壁 在...内 魂之神殿 试炼房间 使用 弓箭 或 弹弓 - Hitting 机关开关 穿透穿越 大闸门 在...内 阴影神殿 (暗之神殿) 大师任务 (MQ) 使用 弓箭 或 弹弓"
+      },
+      "big_skulltula_pause_lift": {
+        "name": "大型 骷髅蜥 暂停 抱起",
+        "description": "Pausing 处于...状态时 大型 骷髅蜥 is bobbing upwards slightly lifts it, eventually allowing passage 无需 any 道具."
+      },
+      "ground_jump": {
+        "name": "地面跳跃Bug",
+        "description": "Enables requiring 地面 跳跃."
+      },
+      "ground_jump_hard": {
+        "name": "高难度地面跳跃Bug",
+        "description": "Enables 地面 跳跃 which require some precision 室外 的 setting up 跳跃, such as needing extra height 使用 跳斩 或 jumping 处于...状态时 running 使用 悬浮鞋."
+      },
+      "slide_jump": {
+        "name": "冰面滑行侧跳",
+        "description": "Running forward 处于...状态时 滑行 sideways 在...上 ice can be used 至 跳跃 在...上 platforms."
+      },
+      "voidout_collection": {
+        "name": "虚空跌落前瞬拿道具",
+        "description": "Some 道具 can be collected by jumping 至 them, even if it results 在...内 voiding out. Used 用于: - OGC 黄金骷髅蜥 - HC wo第二轮er 道具 无需 游泳穿越 - ZR wo第二轮er 道具 无需 游泳穿越 - ZR Waterfall 露天散落 卢比 无需 游泳穿越 - GV wo第二轮er 道具 无需 游泳穿越 - GV Octorok 隐藏暗洞 卢比 无需 游泳穿越 - 巨大邪神像 oasis fairies - 德库树 露天散落 心心 before 魔王首领 - 沃特神殿 (水之神殿) 靠近 魔王首领 钥匙 宝箱 黄金骷髅蜥 - 阴影 大师任务 (MQ) after boat 与 before 魔王首领 黄金骷髅蜥"
+      },
+      "bomb_detonation": {
+        "name": "高精度 炸弹 凌空引爆",
+        "description": "This trick enables methods that rely 在...上 precisely timing 凌空引爆 的 炸弹, such as detonating 炸弹 在...上 surface 的 水之神殿 至 摧毁 水底水下 rocks 或 getting 黄金骷髅蜥 在...内 第一房间 的 森林神殿 幼年期."
+      },
+      "kf_adult_gs": {
+        "name": "青年期 柯基里森林 黄金骷髅蜥 使用 悬浮鞋",
+        "description": "Can be obtained 无需 钩索 by 使用 悬浮鞋 弹离 的 one 的 roots."
+      },
+      "lw_bridge": {
+        "name": "跳跃 跳上 迷失之森 桥梁 青年期 使用 无道具徒手 (裸身)",
+        "description": "使用 very 高精度 movement it's possible 用于 青年期 至 跳跃 跳上 桥梁 无需 needing 长距离钩索, 悬浮鞋, 或 魔法豆."
+      },
+      "lw_mido_backflip": {
+        "name": "后空翻 越过 米多 青年期",
+        "description": "使用 specific position 与 angle, you can 后空翻 越过 米多."
+      },
+      "lost_wood_navi_dive": {
+        "name": "迷失之森 纳薇 俯冲潜水",
+        "description": "You need Deku 德库棒 或 柯基里之剑 至 俯冲潜水 使用 纳薇 用于 entering 佐拉之河."
+      },
+      "lw_gs_bean": {
+        "name": "迷失之森 青年期 黄金骷髅蜥 无需 魔法豆",
+        "description": "You can collect token 使用 高精度 钩索 use, as long as you can kill 骷髅蜥 somehow 第一. It can be killed 使用 长距离钩索, 弓箭, 炸弹鼠 或 迪恩之火."
+      },
+      "hc_storms_gs": {
+        "name": "海拉鲁城堡 暴风雨之歌地洞 黄金骷髅蜥 使用 仅需 回旋镖",
+        "description": "使用 高精度 throws, 回旋镖 alone can kill 骷髅蜥 与 collect token, 无需 第一 needing 至 blow up 墙壁."
+      },
+      "hf_big_poe_without_epona": {
+        "name": "巨型幽灵 无需 艾波娜",
+        "description": "大型 Poes have chance 的 appearing 无需 艾波娜, you can shoot them quickly 使用 仅限 弓箭."
+      },
+      "kak_tower_gs": {
+        "name": "卡卡利科 塔楼 黄金骷髅蜥 使用 跳斩",
+        "description": "攀爬 塔楼 as high as you can 无需 touching 黄金骷髅蜥, then let go 与 跳斩 immediately. By 跳跃-slashing 从 as low 在...上 木梯 as possible 至 still 击打 骷髅蜥, this trick can be done 无需 承受 fall 受击伤害."
+      },
+      "kak_child_windmill_poh": {
+        "name": "大风车 心之碎片 幼年期 使用 高精度 跳斩",
+        "description": "Can 跳跃 up 至 spinning 升降浮台 从下方 幼年期 使用 高精度 跳斩 timed 使用 platforms rotation."
+      },
+      "kak_rooftop_gs": {
+        "name": "卡卡利科 屋顶 黄金骷髅蜥 使用 悬浮鞋",
+        "description": "Take 悬浮鞋 从 入口 至 Impa's House 越过 至 屋顶 的 骷髅蜥 House. 从 there, 高精度 悬浮鞋 backwalk 使用 后空翻 can be used 至 get 跳上 山坡高处 上方 侧 的 village. 与 then 从 there you can 悬空浮空 跳上 Impa's 屋顶 至 kill 骷髅蜥 与 后空翻 落入 token."
+      },
+      "gy_poh": {
+        "name": "墓地 露天散落 心之碎片 使用 回旋镖",
+        "description": "使用 高精度 移动巡逻 setup you can obtain 心之碎片 by having 回旋镖 interact 使用 it along return path."
+      },
+      "gy_child_dampe_race_poh": {
+        "name": "第二 丹培 赛跑 幼年期",
+        "description": "It is possible 至 complete 第二 丹培 赛跑 幼年期 在...内 下方 minute, but it is strict time limit."
+      },
+      "gy_shadow_fire_arrows": {
+        "name": "阴影神殿 (暗之神殿) 入口进入 使用 火箭",
+        "description": "It is possible 至 光芒 all 的 torches 至 打开 阴影神殿 (暗之神殿) 入口 使用 仅需 火箭, but you must be very quick, 高精度, 与 strategic 使用 how you take your shots."
+      },
+      "dmt_shieldless_climb": {
+        "name": "死亡之山小径 幼年期 攀爬 无需 盾牌",
+        "description": "幼年期 can make it 穿过 eruption 至 到达 DMT Summit 无需 海利亚盾 或 奈鲁之爱 by backwalking 或 simply 承受 受击伤害."
+      },
+      "dmt_soil_gs": {
+        "name": "死亡之山小径 泥土泥坑 黄金骷髅蜥 无需 摧毁 岩石巨石",
+        "description": "Bugs will go 落入 soft 泥土泥坑 even 处于...状态时 岩石巨石 is still blocking 入口. Then, 使用 高精度 移动巡逻 setup you can kill 黄金骷髅蜥 与 obtain token by having 回旋镖 interact 使用 it along return path."
+      },
+      "dmt_bombable": {
+        "name": "死亡之山小径 宝箱 使用 怪力手套",
+        "description": "幼年期 林克 can blow up 墙壁 使用 nearby 炸弹 flower. You must backwalk 使用 flower 与 then quickly 投掷 it toward 墙壁."
+      },
+      "dmt_hovers_lower_gs": {
+        "name": "死亡之山小径 下层 红岩石 黄金骷髅蜥 使用 悬浮鞋",
+        "description": "After killing 骷髅蜥, token can be collected 无需 needing 至 摧毁 岩石 by backflipping down 跳上 it 使用 悬浮鞋. 第一 use 悬浮鞋 至 sta第二轮 在...上 nearby 木栅栏, 与 go 用于 骷髅蜥印章 从 there."
+      },
+      "dmt_bean_lower_gs": {
+        "name": "死亡之山小径 下层 红岩石 黄金骷髅蜥 使用 魔法豆",
+        "description": "After killing 骷髅蜥, token can be collected 无需 needing 至 摧毁 岩石 by jumping down 跳上 it 从 魔法豆 plant, midflight, 使用 高精度 timing 与 positioning."
+      },
+      "dmt_js_lower_gs": {
+        "name": "死亡之山小径 下层 红岩石 黄金骷髅蜥 使用 跳斩",
+        "description": "After killing 骷髅蜥, token can be collected 无需 needing 至 摧毁 岩石 by jumpslashing 从 高精度 angle."
+      },
+      "dmt_climb_hovers": {
+        "name": "死亡之山小径 攀爬 使用 悬浮鞋",
+        "description": "It is possible 至 use 悬浮鞋 至 bypass needing 至 摧毁 岩石巨石 blocking path 至 top 的 死亡之山."
+      },
+      "dmt_upper_gs": {
+        "name": "死亡之山小径 上层 红岩石 黄金骷髅蜥 使用 后空翻",
+        "description": "After killing 骷髅蜥, token can be collected by backflipping 落入 岩石 在 correct angle."
+      },
+      "dmt_bolero_biggoron": {
+        "name": "送达 滴眼药水 使用 火之波莱罗舞曲",
+        "description": "Playing warp song normally causes trade item 至 spoil immediately, however, it is possible use 波莱罗舞曲 至 到达 巨隆 与 still 送达 滴眼药水 before they spoil. If you do not wear 哥隆红衣, heat timer inside 火山口 will override trade item's timer. When you 出口离开 至 死亡之山小径 you will have one 第二 至 show 滴眼药水 before they expire. You can get extra time 至 show 滴眼药水 if you warp immediately upon receiving them. If you don't have many 心心, you may have 至 reset heat timer by quickly dipping 在...内 与 out 的 达鲁尼亚's chamber 或 quickly equipping 与 unequipping 哥隆红衣. This trick does not apply if \"Ra第二轮omize Warp Song Destinations\" is enabled, 或 if settings are such that trade 道具 do not need 至 be delivered within time limit."
+      },
+      "gc_pot": {
+        "name": "哥隆之城 旋转大罐 心之碎片 使用 炸弹鼠",
+        "description": "炸弹鼠 can be used 至 逼停 旋转大罐, but it can be quite finicky 至 get it 至 work."
+      },
+      "gc_pot_strength": {
+        "name": "哥隆之城 旋转大罐 心之碎片 使用 怪力手套",
+        "description": "Allows 用于 stopping 哥隆之城 旋转大罐 使用 炸弹 Flower alone, requiring 怪力手套 在...内 lieu 的 inventory 爆炸物."
+      },
+      "gc_rolling_strength": {
+        "name": "滚石小哥隆 (飙速小哥隆) 幼年期 使用 怪力手套",
+        "description": "Use 炸弹 Flower 在...上 楼梯 或 靠近 Medigoron. Timing is tight, especially 无需 backwalking."
+      },
+      "gc_leftmost": {
+        "name": "哥隆之城 迷宫 左侧 宝箱 使用 悬浮鞋",
+        "description": "高精度 backwalk starting 从 在...上 top 的 箱子 与 e第二轮ing 使用 precisely-timed 后空翻 can 到达 this 宝箱 无需 needing either 麦戈顿之锤 或 银色手套."
+      },
+      "gc_grotto": {
+        "name": "哥隆之城 隐藏暗洞 使用 钩索 处于...状态时 承受 受击伤害",
+        "description": "It is possible 至 到达 哥隆之城 隐藏暗洞 by quickly 使用 钩索 处于...状态时 在...内 midst 的 承受 受击伤害 从 岩浆 地面."
+      },
+      "gc_link_goron_dins": {
+        "name": "施展迪恩之火逼停滚石小哥隆林克",
+        "description": "施法时机较为苛刻，但可用迪恩之火的烈焰光圈判定瞬间逼停滚动的哥隆林克。"
+      },
+      "dmc_hover_bean_poh": {
+        "name": "火山口's 魔法豆 心之碎片 使用 悬浮鞋",
+        "description": "悬空浮空 从 base 的 桥梁 靠近 哥隆之城 与 walk up very steep slope."
+      },
+      "dmc_bolero_jump": {
+        "name": "死亡之山火山口 跳跃 至 波莱罗舞曲",
+        "description": "青年期, 使用 盾牌 至 丢下 瓦罐 处于...状态时 you have perfect speed 与 position, 瓦罐 can 推开 you that little extra distance you need 至 跳跃 横渡跨越 鸿沟缺口 在...内 桥梁."
+      },
+      "dmc_boulder_js": {
+        "name": "死亡之山火山口 从上层至下层 使用 麦戈顿之锤",
+        "description": "使用 麦戈顿之锤, you can 跳斩 岩石 twice 在...内 same 跳跃 在...内 order 至 摧毁 it before you fall 落入 岩浆."
+      },
+      "dmc_boulder_skip": {
+        "name": "死亡之山火山口 从上层至下层 岩石巨石 跳过",
+        "description": "青年期, 使用 careful positioning, you can 跳跃 至 高台平台 where 岩石巨石 is, then use repeated 高台平台 grabs 至 shimmy 至 climbable 高台平台. This trick supersedes \"死亡之山火山口 从上层至下层 使用 麦戈顿之锤\"."
+      },
+      "zr_lower": {
+        "name": "佐拉之河 下层 露天散落 心之碎片 青年期 使用 无道具徒手 (裸身)",
+        "description": "青年期 can 到达 this 心之碎片 使用 高精度 跳跃, 无需 悬浮鞋 required."
+      },
+      "zr_upper": {
+        "name": "佐拉之河 上层 露天散落 心之碎片 青年期 使用 无道具徒手 (裸身)",
+        "description": "青年期 can 到达 this 心之碎片 使用 高精度 跳跃, 无需 悬浮鞋 required."
+      },
+      "zr_hovers": {
+        "name": "佐拉之里 入口进入 使用 悬浮鞋",
+        "description": "Can 悬空浮空 背后 waterfall 青年期."
+      },
+      "zr_cucco": {
+        "name": "佐拉之里 入口进入 使用 库克鸡",
+        "description": "You can fly 背后 waterfall 使用 库克鸡 幼年期."
+      },
+      "zd_king_zora_skip": {
+        "name": "跳过 佐拉国王 青年期 使用 无道具徒手 (裸身)",
+        "description": "使用 高精度 跳跃 青年期, it is possible 至 get 在...上 木栅栏 next 至 佐拉国王 从 front 至 access 佐拉之泉."
+      },
+      "zd_gs": {
+        "name": "佐拉之里 黄金骷髅蜥 使用 无需 附加 道具",
+        "description": "高精度 跳斩 can kill 骷髅蜥 与 recoil back 跳上 top 的 冰冻 waterfall. 至 kill it, logic normally guarantees one 的 钩索, 弓箭, 或 Magic."
+      },
+      "zf_great_fairy_without_explosives": {
+        "name": "佐拉之泉 伟大 妖精 无需 爆炸物",
+        "description": "It's possible 至 use 银色手套 至 pick up silver 岩石 与 麦戈顿之锤 至 打破 岩石 下方 it, allowing you 至 高台平台 抓取 edge 的 hole 与 get 穿过 breakable 墙壁 (麦戈顿之锤 can't 打破 墙壁 itself)."
+      },
+      "lh_lab_wall_gs": {
+        "name": "海利亚湖 湖畔研究所 墙壁 黄金骷髅蜥 使用 跳斩",
+        "description": "跳斩 至 actually collect token is somewhat 高精度."
+      },
+      "lh_lab_diving": {
+        "name": "海利亚湖 湖畔研究所 俯冲潜水 无需 黄金 鳞片",
+        "description": "Remove 铁鞋 在...内 midst 的 Hookshotting 水底水下 箱子."
+      },
+      "lh_water_hookshot": {
+        "name": "沃特神殿 (水之神殿) 入口进入 无需 铁鞋 使用 钩索",
+        "description": "When entering 沃特神殿 (水之神殿) 使用 黄金 鳞片 instead 的 铁鞋, 长距离钩索 is usually used 至 be able 至 击打 机关开关 与 打开 大闸门. But, by sta第二轮ing 在...内 particular spot, 机关开关 can be 击打 使用 仅限 到达 的 钩索."
+      },
+      "gv_crate_hovers": {
+        "name": "格鲁德峡谷 箱子 心之碎片 青年期 使用 悬浮鞋",
+        "description": "从 far 侧 的 格鲁德峡谷, 高精度 悬浮鞋 movement 与 跳跃-slash recoil can allow 青年期 至 到达 高台平台 使用 箱子 心之碎片 无需 needing 长距离钩索. You will take fall 受击伤害."
+      },
+      "gv_child_cucco_jump": {
+        "name": "格鲁德峡谷 跳跃 木栅栏 使用 库克鸡",
+        "description": "使用 库克鸡 幼年期, it's possible 至 跳斩 越过 大闸门."
+      },
+      "gv_hookshot_bridge": {
+        "name": "格鲁德峡谷 桥梁 使用 仅限 钩索",
+        "description": "使用 钩索 Extension 与 高精度 setup, you can 横渡跨越 broken 桥梁 在...内 格鲁德峡谷 使用 仅限 钩索."
+      },
+      "gv_child_tent": {
+        "name": "格鲁德峡谷 进入 木工工匠's 木工帐篷 幼年期",
+        "description": "loading zone 用于 木工工匠's 木工帐篷 is accessible 至 幼年期."
+      },
+      "pass_guards_with_nothing": {
+        "name": "潜行绕过 穿过 移动巡逻 格鲁德 城防守卫 使用 无需 道具",
+        "description": "logic normally guarantees 弓箭 或 钩索 至 stun them 从 distance, but every 移动巡逻 guard can be passed 使用 basic movement 与 AI manipulation"
+      },
+      "gf_wasteland_gate_sidehop_skip": {
+        "name": "格鲁德要塞 大闸门 跳过 使用 侧跳",
+        "description": "You can 侧跳 out 的 bou第二轮s 从 塔楼, then 侧跳 again 在...上 other 侧 的 大闸门. This is easiest 与 most useful 用于 幼年期, but 青年期 can also do this 至 跳过 格鲁德 Jabber Nut."
+      },
+      "gf_adult_skip_wasteland_gate": {
+        "name": "格鲁德要塞 跳过 幻影沙漠 大闸门 青年期",
+        "description": "青年期 高精度 跳斩 out 的 bou第二轮s 使用 hoverboots 从上方 jail can be used 至 get 穿过 大闸门. This can also be used 至 到达 塔楼 与 下层 大闸门 用于 幼年期 无需 攀爬."
+      },
+      "gf_warrior_with_difficult_weapon": {
+        "name": "格鲁德要塞 女武士 使用 高难度 武器",
+        "description": "女武士 can be defeated 使用 弹弓 或 炸弹鼠."
+      },
+      "gf_ledge_clip_into_gtg": {
+        "name": "高台平台 穿模穿墙 落入 训练场 地面",
+        "description": "青年期 林克 can use 高台平台 穿模穿墙 至 进入 格鲁德训练场 无需 格鲁德 Card."
+      },
+      "hw_bunny_crossing": {
+        "name": "幻影沙漠 横渡跨越 使用 兔子兜帽",
+        "description": "You can beat quicksa第二轮 by 使用 increased speed 的 兔子兜帽. Note that jumping 至 carpet merchant 幼年期 typically 需要 fairly 高精度 跳斩."
+      },
+      "hw_crossing": {
+        "name": "幻影沙漠 横渡跨越 无需 悬浮鞋 或 长距离钩索",
+        "description": "You can beat quicksa第二轮 by backwalking 横渡跨越 it 在...内 specific way. Note that jumping 至 carpet merchant 幼年期 typically 需要 fairly 高精度 跳斩."
+      },
+      "lens_hw": {
+        "name": "免真实之镜 幻影沙漠",
+        "description": "By memorizing path, you can travel 穿透穿越 幻影沙漠 无需 使用 真实之镜 至 see 幽灵. equivalent trick 用于 going 在...内 逆向 穿透穿越 幻影沙漠 is \"逆向 幻影沙漠\"."
+      },
+      "hw_reverse": {
+        "name": "逆向 幻影沙漠",
+        "description": "By memorizing path, you can travel 穿透穿越 幻影沙漠 在...内 逆向. Note that jumping 至 carpet merchant 幼年期 typically 需要 fairly 高精度 跳斩. equivalent trick 用于 going forward 穿透穿越 幻影沙漠 is \"免真实之镜 幻影沙漠\". 至 横渡跨越 河流 的 sa第二轮 使用 无需 附加 道具, be sure 至 also enable \"幻影沙漠 横渡跨越 无需 悬浮鞋 或 长距离钩索\". Unless all overworld entrances are ra第二轮omized, 幼年期 林克 will not be expected 至 do anything 在 格鲁德要塞."
+      },
+      "colossus_gs": {
+        "name": "巨大邪神像 山坡高处 黄金骷髅蜥 使用 钩索",
+        "description": "Somewhat 高精度. If you kill enough 转转草怪 you can get enough 的 打破 至 take some time 至 aim more carefully."
+      },
+      "deku_basement_gs": {
+        "name": "德库树 地下室 藤蔓 黄金骷髅蜥 使用 跳斩",
+        "description": "Can be defeated by doing 高精度 跳斩."
+      },
+      "deku_b1_skip": {
+        "name": "德库树 地下室 无需 弹弓",
+        "description": "高精度 跳跃 can be used 至 跳过 needing 至 use 弹弓 至 go 绕过 B1 的 德库树. If used 使用 \"Closed Forest\" setting, 弹弓 will not be guaranteed 至 exist somewhere inside Forest. This trick applies 至 both Vanilla 与 Master Quest."
+      },
+      "deku_b1_bow_webs": {
+        "name": "德库树 地下室 蜘蛛网 至 哥玛 使用 弓箭",
+        "description": "All spider 蜘蛛网 墙壁 在...内 德库树 地下室 can be burnt 青年期 使用 仅需 弓箭 by shooting 穿透穿越 torches. This trick 仅限 applies 至 circular 蜘蛛网 leading 至 哥玛; 两个 vertical webs are always 在...内 logic. 后空翻 跳上 宝箱 靠近 火把 在 bottom 的 vine 墙壁. 使用 高精度 positioning you can shoot 穿透穿越 火把 至 right edge 的 circular 蜘蛛网. This allows completion 的 青年期 德库树 使用 无需 火焰 源头."
+      },
+      "deku_b1_backflip_over_spiked_log": {
+        "name": "德库树 地下室 后空翻 越过 尖刺 原木",
+        "description": "Allows backflipping 越过 尖刺 原木 在...内 德库树 地下室 在...内 Vanilla. 仅限 relevant if \"Shuffle 游泳穿越\" is enabled."
+      },
+      "deku_mq_compass_gs": {
+        "name": "德库树 大师任务 (MQ) 罗盘 房间 黄金骷髅蜥 岩石巨石 使用 仅需 麦戈顿之锤",
+        "description": "攀爬 至 top 的 藤蔓, then let go 与 跳斩 immediately 至 摧毁 岩石巨石 使用 麦戈顿之锤, 无需 needing 至 spawn 时光之歌 石块."
+      },
+      "deku_mq_log": {
+        "name": "德库树 大师任务 (MQ) 翻滚 下方 尖刺 原木",
+        "description": "You can get 穿过 尖刺 原木 by 翻滚 至 briefly shrink your hitbox. 青年期, timing is bit more 高精度."
+      },
+      "dc_scarecrow_gs": {
+        "name": "多东哥洞穴 稻草人 黄金骷髅蜥 使用 阿莫斯石像",
+        "description": "You can 跳跃 弹离 阿莫斯石像 至 到达 凹陷壁龛 使用 黄金骷髅蜥. It takes quite long time 至 拉动 雕像 entire way. 跳跃 至 凹陷壁龛 can be bit picky when done 幼年期."
+      },
+      "dc_vines_gs": {
+        "name": "多东哥洞穴 藤蔓 黄金骷髅蜥 从下方 使用 长距离钩索",
+        "description": "藤蔓 upon which this 骷髅蜥 rests are one-sided 物理碰撞. You can use 长距离钩索 至 get it 从下方, by shooting it 穿透穿越 藤蔓, bypassing need 至 下层 staircase."
+      },
+      "dc_stairs_with_bow": {
+        "name": "多东哥洞穴 楼梯 使用 弓箭",
+        "description": "弓箭 can be used 至 knock down 楼梯 使用 两个 水井-timed shots."
+      },
+      "dc_slingshot_skip": {
+        "name": "多东哥洞穴 幼年期 弹弓 跳过",
+        "description": "使用 高精度 platforming, 幼年期 can 横渡跨越 platforms 处于...状态时 烈焰 circles are there. When enabling this trick, it's recomme第二轮ed that you also enable 青年期 variant: \"多东哥洞穴 尖刺 陷阱 房间 跳跃 无需 悬浮鞋\"."
+      },
+      "dc_scrub_room": {
+        "name": "多东哥洞穴 两个 德库奴商贩 房间 使用 怪力手套",
+        "description": "使用 help 从 conveniently-positioned 石块, 青年期 can quickly carry 炸弹 Flower 越过 至 摧毁 泥墙 blocking 房间 使用 两个 Deku Scrubs."
+      },
+      "dc_jump": {
+        "name": "多东哥洞穴 尖刺 陷阱 房间 跳跃 无需 悬浮鞋",
+        "description": "跳跃 is 青年期 林克 仅限. Applies 至 both Vanilla 与 大师任务 (MQ)."
+      },
+      "dc_hammer_floor": {
+        "name": "多东哥洞穴 砸开 魔王首领 大厅 地面",
+        "description": "bombable 地面 before King 多东哥 can be destroyed 使用 麦戈顿之锤 if 击打 在...内 very center. This is 仅限 relevant 使用 Shuffle 魔王首领 Entrances 或 if 多东哥洞穴 is 大师任务 (MQ) 与 either variant 的 \"多东哥洞穴 大师任务 (MQ) 光芒 眼眸 使用 怪力手套\" is 在...上."
+      },
+      "dc_dodongo_chu": {
+        "name": "多东哥洞穴 多东哥 使用 仅限 炸弹鼠",
+        "description": "使用 高精度 timing you can feed King 多东哥 炸弹鼠 during 后空翻"
+      },
+      "dc_mq_stairs_with_only_strength": {
+        "name": "多东哥洞穴 大师任务 (MQ) 楼梯 使用 仅限 怪力手套",
+        "description": "承受 炸弹 从 back can be used 至 下层 楼梯 无需 使用 stick 至 丢下 炸弹 从 墙壁."
+      },
+      "dc_mq_child_bombs": {
+        "name": "多东哥洞穴 大师任务 (MQ) 提前获得 炸弹 道具袋 区域 幼年期",
+        "description": "使用 高精度 跳斩 从上方, you can 到达 炸弹 道具袋 区域 as 仅限 幼年期 无需 needing 弹弓. You will take fall 受击伤害."
+      },
+      "dc_mq_child_eyes": {
+        "name": "多东哥洞穴 大师任务 (MQ) 光芒 眼眸 使用 怪力手套 幼年期",
+        "description": "If you move very quickly, it is possible 至 use 炸弹 flower 在 top 的 房间 至 光芒 眼眸. 至 perform this trick 幼年期 is significantly more 高难度 than 青年期. player is also expected 至 complete DC back 区域 无需 爆炸物, including getting 穿过 阿莫斯石像 墙壁 至 机关开关 用于 魔王首领 门扇."
+      },
+      "dc_mq_adult_eyes": {
+        "name": "多东哥洞穴 大师任务 (MQ) 光芒 眼眸 使用 怪力手套 青年期",
+        "description": "If you move very quickly, it is possible 至 use 炸弹 flower 在 top 的 房间 至 光芒 眼眸."
+      },
+      "dc_eyes_chu": {
+        "name": "多东哥洞穴 光芒 眼眸 使用 炸弹鼠",
+        "description": "You can 光芒 多东哥 head's 眼眸 使用 炸弹鼠 从 主 房间, allowing instant access 至 e第二轮 的 dungeon."
+      },
+      "jabu_alcove_jump_dive": {
+        "name": "贾布贾布 水底水下 凹陷壁龛 青年期 使用 起跳俯冲潜水",
+        "description": "Sta第二轮ing 上方 水底水下 tunnel leading 至 德库奴商贩, 跳跃 down 与 游泳穿越 穿透穿越 tunnel. This allows 青年期 至 access 凹陷壁龛 使用 无需 鳞片 或 铁鞋. 在...内 Vanilla 贾布贾布, this 凹陷壁龛 has business 德库奴商贩. 在...内 大师任务 (MQ) 贾布贾布, it has 罗盘 宝箱 与 门扇 机关开关 用于 主 地面."
+      },
+      "jabu_boss_hover": {
+        "name": "贾布贾布 靠近 魔王首领 房间 使用 悬浮鞋",
+        "description": "木箱 用于 blue 机关开关 can be carried 越过 by backwalking 使用 one 处于...状态时 elevator is 在 its peak. Alternatively, you can 跳过 transporting 木箱 by quickly 翻滚 从 机关开关 与 opening 门扇 before it closes. However, timing 用于 this is very tight."
+      },
+      "jabu_near_boss_ranged": {
+        "name": "贾布贾布 靠近 魔王首领 天花板 机关开关/黄金骷髅蜥 无需 回旋镖 或 爆炸物",
+        "description": "Vanilla 贾布贾布: 从 靠近 入口 落入 房间, you can 击打 机关开关 that opens 门扇 至 魔王首领 房间 使用 precisely-aimed use 的 弹弓, 弓箭, 或 长距离钩索. As 水井, if you 攀爬 至 top 的 藤蔓 you can sta第二轮 在...上 right edge 的 升降浮台 与 shoot 绕过 glass. 从 this distance, even 钩索 can 到达 机关开关. This trick is 仅限 relevant if \"Shuffle 魔王首领 Entrances\" is enabled. 大师任务 (MQ) 贾布贾布: 黄金骷髅蜥 Token can be collected 使用 长距离钩索 使用 same methods as hitting 机关开关 在...内 Vanilla."
+      },
+      "jabu_near_boss_explosives": {
+        "name": "贾布贾布 靠近 魔王首领 天花板 机关开关 使用 爆炸物",
+        "description": "You can 击打 机关开关 that opens 门扇 至 魔王首领 房间 使用 precisely-aimed 炸弹鼠. Also, 使用 悬浮鞋, 青年期 can 投掷 炸弹 在 机关开关. This trick is 仅限 relevant if \"Shuffle 魔王首领 Entrances\" is enabled."
+      },
+      "jabu_b1_cube_hover": {
+        "name": "贾布贾布 B1 穿行通过 方块 使用 悬浮鞋",
+        "description": "It's possible 到达 瓦罐 穿过 方块 使用 仅限 悬浮鞋."
+      },
+      "lens_jabu_mq": {
+        "name": "贾布贾布 大师任务 (MQ) 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 贾布贾布 大师任务 (MQ)."
+      },
+      "jabu_mq_rang_jump": {
+        "name": "贾布贾布 大师任务 (MQ) 罗盘 宝箱 使用 回旋镖",
+        "description": "回旋镖 can 到达 cow 机关开关 至 spawn 宝箱 by targeting cow, jumping 弹离 的 高台平台 where 宝箱 spawns, 与 throwing 回旋镖 在...内 midair."
+      },
+      "jabu_mq_sot_gs": {
+        "name": "贾布贾布 大师任务 (MQ) 时光之歌 石块 黄金骷髅蜥 使用 回旋镖",
+        "description": "Allow 回旋镖 至 return 至 you 穿透穿越 时光之歌 石块 至 抓取 token."
+      },
+      "jabu_barinade_pots": {
+        "name": "贾布贾布 百灵怪 (巴林奈德) 使用 瓦罐",
+        "description": "百灵怪 (巴林奈德) can be damaged 使用 瓦罐, requiring 仅限 回旋镖 至 defeat."
+      },
+      "lens_botw": {
+        "name": "底部之井 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 底部之井."
+      },
+      "bottom_of_the_well_navi_dive": {
+        "name": "底部之井 纳薇 俯冲潜水",
+        "description": "You need Deku 德库棒 或 柯基里之剑 至 俯冲潜水 使用 纳薇 用于 entering 底部之井."
+      },
+      "botw_child_deadhand": {
+        "name": "幼年期 死手 (尸手鬼) 无需 柯基里之剑",
+        "description": "需要 9 德库棒 或 5 jumpslashes."
+      },
+      "botw_basement": {
+        "name": "底部之井 地图 宝箱 使用 怪力手套 & 德库棒",
+        "description": "宝箱 在...内 地下室 can be reached 使用 怪力手套 by doing 跳斩 使用 lit stick 至 access 炸弹 Flowers."
+      },
+      "botw_pits": {
+        "name": "底部之井 大师任务 (MQ) 跳跃 越过 深坑",
+        "description": "处于...状态时 深坑 在...内 底部之井 don't allow you 至 跳跃 仅需 by running straight 在 them, you can still get 越过 them by 侧-hopping 或 backflipping 横渡跨越. 使用 爆炸物, this allows you 至 access 中央 areas 无需 塞尔达摇篮曲. 使用 塞尔达摇篮曲, it allows you 至 access 西侧 inner 房间 无需 爆炸物."
+      },
+      "botw_mq_deadhand_key": {
+        "name": "底部之井 大师任务 (MQ) 死手 (尸手鬼) 露天散落 钥匙 使用 回旋镖",
+        "description": "回旋镖 can fish item out 的 rubble 无需 needing 爆炸物 至 blow it up."
+      },
+      "forest_first_gs": {
+        "name": "森林神殿 第一房间 黄金骷髅蜥 使用 近战武器 武器",
+        "description": "Allows killing this 骷髅蜥 使用 Sword 或 德库棒 by jumpslashing it as you let go 从 藤蔓."
+      },
+      "forest_courtyard_east_gs": {
+        "name": "森林神殿 东侧 城堡庭院 黄金骷髅蜥 使用 回旋镖",
+        "description": "高精度 回旋镖 throws can allow 幼年期 至 kill 骷髅蜥 与 collect token."
+      },
+      "forest_vines": {
+        "name": "森林神殿 东侧 城堡庭院 藤蔓 使用 钩索",
+        "description": "藤蔓 在...内 森林神殿 leading 至 where 水井 drain 机关开关 is 在...内 sta第二轮ard form can be barely reached 使用 仅需 钩索. Applies 至 大师任务 (MQ) also."
+      },
+      "forest_courtyard_ledge": {
+        "name": "森林神殿 东北侧 城堡庭院 高台平台 使用 悬浮鞋",
+        "description": "使用 高精度 悬浮鞋 movement you can fall down 至 this 高台平台 从 上层 balconies. If done precisely enough, it is not necessary 至 take fall 受击伤害. 在...内 大师任务 (MQ), this 跳过 长距离钩索 requirement. 在...内 Vanilla, this can 跳过 钩索 requirement 在...内 入口 ra第二轮omizer."
+      },
+      "forest_doorframe": {
+        "name": "森林神殿 东侧 城堡庭院 门扇 帧 使用 悬浮鞋",
+        "description": "高精度 悬浮鞋 movement 从 上层 balconies 在...内 this 城堡庭院 can be used 至 get 在...上 top 的 门扇 帧. Applies 至 both Vanilla 与 Master Quest. 在...内 Vanilla, 从 在...上 top 门扇 帧 you can summon Pierre, allowing you 至 access 坠落 天花板 房间 提前获得. 在...内 Master Quest, this allows you 至 obtain 黄金骷髅蜥 在...上 门扇 帧 青年期 无需 钩索 或 时光之歌."
+      },
+      "forest_outside_backdoor": {
+        "name": "森林神殿 室外 后门穿入 使用 跳斩",
+        "description": "跳斩 recoil can be used 至 到达 高台平台 在...内 石块 解谜 房间 that leads 至 西侧 城堡庭院. This 跳过 potential 悬浮鞋 requirement 在...内 Vanilla, 与 it can sometimes apply 在...内 大师任务 (MQ) as 水井. This trick can be performed as both ages."
+      },
+      "forest_courtyard_hearts_boomerang": {
+        "name": "森林神殿 城堡庭院 心心 使用 回旋镖",
+        "description": "水井 aimed 回旋镖 从 水之神殿's edge can 到达 心心 从 地面 level. If unable 至 游泳穿越, you can back away 从 水之神殿 处于...状态时 回旋镖 is returning so 心心 la第二轮 在...上 地面."
+      },
+      "forest_well_swim": {
+        "name": "游泳穿越 穿透穿越 森林神殿 水井 使用 钩索",
+        "description": "Shoot 藤蔓 在...内 水井 as low 与 as far 至 right as possible, 与 then immediately 游泳穿越 下方 天花板 至 right. This is usually 仅限 useful 在...内 Master Quest."
+      },
+      "forest_mq_block_puzzle": {
+        "name": "跳过 森林神殿 大师任务 (MQ) 石块 解谜 使用 炸弹鼠",
+        "description": "Se第二轮 炸弹鼠 straight up center 的 墙壁 directly 至 左侧 upon entering 房间."
+      },
+      "forest_mq_js_hallway_switch": {
+        "name": "森林神殿 大师任务 (MQ) 扭曲回廊 走廊 机关开关 使用 跳斩",
+        "description": "机关开关 至 twist 走廊 can be 击打 使用 跳斩 穿透穿越 glass 石块. 至 get 在...内 front 的 机关开关, either use 悬浮鞋 或 击打 shortcut 机关开关 在 top 的 房间 与 跳跃 从 glass blocks that spawn. 德库棒 can be used 幼年期, but 柯基里之剑 is too short 至 到达 穿透穿越 glass."
+      },
+      "forest_mq_hookshot_hallway_switch": {
+        "name": "森林神殿 大师任务 (MQ) 扭曲回廊 走廊 机关开关 使用 钩索",
+        "description": "There's very small 鸿沟缺口 之间 glass 石块 与 墙壁. 穿透穿越 that 鸿沟缺口 you can 钩索 靶心 在...上 天花板."
+      },
+      "forest_mq_rang_hallway_switch": {
+        "name": "森林神殿 大师任务 (MQ) 扭曲回廊 走廊 机关开关 使用 回旋镖",
+        "description": "回旋镖 can return 至 林克 穿透穿越 墙壁, allowing 幼年期 至 击打 走廊 机关开关. This can be used 至 allow 青年期 至 穿行通过 穿透穿越 later, 或 在...内 conjunction 使用 \"森林神殿 室外 后门穿入 使用 跳斩\"."
+      },
+      "forest_mq_child_doorframe": {
+        "name": "森林神殿 大师任务 (MQ) 门框 黄金骷髅蜥 幼年期 无需 回旋镖",
+        "description": "If 青年期 burns 城堡庭院 webbing 使用 火箭 (which is permanent flag 在...内 Ship Ra第二轮o) then 幼年期 can 攀爬 up 至 balconies 与 跳跃 至 SoT 石块 从 railing, 与 从 there either 翻滚 跳跃 或 跳跃 against 墙壁 至 到达 门框. 从 there, 黄金骷髅蜥 can be killed 使用 crouchstab, 爆炸物 或 other ranged weapon 与 collected by climbing down."
+      },
+      "fire_sot": {
+        "name": "火之神殿 时光之歌 房间 黄金骷髅蜥 无需 时光之歌",
+        "description": "高精度 跳跃 can be used 至 到达 this 房间."
+      },
+      "fire_strength": {
+        "name": "火之神殿 攀爬 无需 怪力手套",
+        "description": "高精度 跳跃 can be used 至 跳过 pushing 石块."
+      },
+      "fire_scarecrow": {
+        "name": "火之神殿 东侧 塔楼 无需 稻草人之歌",
+        "description": "Also known as \"Pixelshot\". 长距离钩索 can 到达 靶心 在...上 elevator itself, allowing you 至 跳过 needing 至 spawn 稻草人."
+      },
+      "fire_skip_flame_walls": {
+        "name": "火之神殿 跳过 烈焰 墙壁",
+        "description": "If you move quickly you can 潜行绕过 穿过 edge 的 烈焰 墙壁 before rises up 至 石块 you. 至 do it 无需 承受 受击伤害 is more 高精度. Allows progress 无需 needing either Small 钥匙 或 悬浮鞋. 在...内 大师任务 (MQ) if either \"火之神殿 大师任务 (MQ) 下层 至 上层 蜥蜴战士 迷宫 使用 悬浮鞋\" 或 \"使用 高精度 跳跃\" are enabled, this also allows progress deeper 落入 dungeon 无需 钩索. 幼年期 can 侧跳 穿过 火焰 墙壁 在...内 大师任务 (MQ) 大厅."
+      },
+      "fire_mq_near_boss": {
+        "name": "火之神殿 大师任务 (MQ) 宝箱 靠近 魔王首领 无需 砸破 箱子",
+        "description": "hitbox 用于 火把 exte第二轮s bit 室外 的 箱子. Shoot flaming arrow 在 侧 的 箱子 至 光芒 火把 无需 needing 至 get 越过 there 与 打破 箱子."
+      },
+      "fire_mq_blocked_chest": {
+        "name": "火之神殿 大师任务 (MQ) 大型 岩浆 房间 受阻 门扇 无需 钩索",
+        "description": "There is 鸿沟缺口 之间 hitboxes 的 烈焰 墙壁 在...内 大型 岩浆 房间. If you know where this 鸿沟缺口 is located, you can 跳跃 穿透穿越 it 与 跳过 needing 至 use 钩索. 至 do this 无需 承受 受击伤害 is more 高精度."
+      },
+      "fire_mq_bk_chest": {
+        "name": "火之神殿 大师任务 (MQ) 魔王首领 钥匙 宝箱 无需 弓箭",
+        "description": "It is possible 至 光芒 both 的 timed torches 至 unbar 门扇 至 魔王首领 钥匙 宝箱's 房间 使用 仅需 迪恩之火 if you move very quickly 之间 两个 torches. It is also possible 至 unbar 门扇 使用 仅需 迪恩之火 by abusing oversight 在...内 way game counts how many torches have been lit."
+      },
+      "fire_mq_climb": {
+        "name": "火之神殿 大师任务 (MQ) 攀爬 无需 火焰 源头",
+        "description": "You can use 悬浮鞋 至 悬空浮空 绕过 至 climbable 墙壁, skipping need 至 use 火焰 源头 与 spawn 钩索 靶心."
+      },
+      "fire_mq_maze_side_room": {
+        "name": "火之神殿 大师任务 (MQ) 蜥蜴战士 迷宫 侧室房间 无需 木箱",
+        "description": "You can walk 从 blue 机关开关 至 门扇 与 quickly 打开 门扇 before bars reclose. This 跳过 needing 至 到达 上层 sections 的 迷宫 至 get 木箱 至 place 在...上 机关开关."
+      },
+      "fire_mq_maze_hovers": {
+        "name": "火之神殿 大师任务 (MQ) 下层 至 上层 蜥蜴战士 迷宫 使用 悬浮鞋",
+        "description": "Use 悬浮鞋 弹离 的 箱子 至 攀爬 至 上层 迷宫 无需 needing 至 spawn 与 use 钩索 targets."
+      },
+      "fire_mq_maze_jump": {
+        "name": "火之神殿 大师任务 (MQ) 下层 至 上层 蜥蜴战士 迷宫 使用 高精度 跳跃",
+        "description": "高精度 跳跃 弹离 的 箱子 can be used 至 攀爬 至 上层 迷宫 无需 needing 至 spawn 与 use 钩索 targets. This trick supersedes both \"火之神殿 大师任务 (MQ) 下层 至 上层 蜥蜴战士 迷宫 使用 悬浮鞋\" 与 \"火之神殿 大师任务 (MQ) 蜥蜴战士 迷宫 侧室房间 无需 木箱\"."
+      },
+      "fire_mq_above_maze_gs": {
+        "name": "火之神殿 大师任务 (MQ) 上方 烈焰 墙壁 迷宫 黄金骷髅蜥 从下方 使用 长距离钩索",
+        "description": "地面 的 房间 that contains this 骷髅蜥 is 仅限 solid 从上方. 从 迷宫 下方, 长距离钩索 can be shot 穿透穿越 天花板 至 obtain token 使用 两个 减少要求 small keys than normal."
+      },
+      "water_longshot_torch": {
+        "name": "沃特神殿 (水之神殿) 火把 长距离钩索",
+        "description": "Sta第二轮 在...上 eastern 侧 的 中央 石柱 与 长距离钩索 torches 在...上 bottom level. 游泳穿越 穿透穿越 corridor 与 float up 至 top level. This allows access 至 this 区域 与 下层 水之神殿 levels 无需 铁鞋. majority 的 进阶技巧 that allow you 至 跳过 铁鞋 在...内 沃特神殿 (水之神殿) are not going 至 be relevant unless this trick is 第一 enabled."
+      },
+      "water_cracked_wall_hovers": {
+        "name": "沃特神殿 (水之神殿) 破裂 墙壁 使用 悬浮鞋",
+        "description": "使用 midair 侧-hop 处于...状态时 wearing 悬浮鞋, you can 到达 破裂 墙壁 无需 needing 至 raise 水之神殿 up 至 middle level."
+      },
+      "water_cracked_wall": {
+        "name": "沃特神殿 (水之神殿) 破裂 墙壁 使用 无需 附加 道具",
+        "description": "高精度 跳斩 (among other methods) will get you 至 破裂 墙壁 无需 needing 悬浮鞋 或 至 raise 水之神殿 至 middle level. This trick supersedes \"沃特神殿 (水之神殿) 破裂 墙壁 使用 悬浮鞋\"."
+      },
+      "water_bk_region": {
+        "name": "沃特神殿 (水之神殿) 魔王首领 钥匙 区域 使用 悬浮鞋",
+        "description": "使用 高精度 悬浮鞋 movement it is possible 至 到达 魔王首领 钥匙 宝箱's 区域 无需 needing 长距离钩索. It is not necessary 至 take 受击伤害 从 尖刺. 黄金骷髅蜥 Token 在...内 following 房间 can also be obtained 使用 仅需 悬浮鞋."
+      },
+      "water_north_basement_ledge_jump": {
+        "name": "沃特神殿 (水之神殿) 北侧 地下室 高台平台 使用 高精度 跳跃",
+        "description": "在...内 northern 地下室 there's 高台平台 从 where, 在...内 Vanilla 沃特神殿 (水之神殿), 岩石巨石 翻滚 out 落入 房间. Normally 至 跳跃 directly 至 this 高台平台 logically 需要 悬浮鞋, but 使用 高精度 跳跃, it can be done 无需 them. This trick applies 至 both Vanilla 与 Master Quest."
+      },
+      "water_fw_central_gs": {
+        "name": "沃特神殿 (水之神殿) 中央 石柱 黄金骷髅蜥 使用 费罗尔之风",
+        "description": "If you set 费罗尔之风 inside 中央 石柱 与 then return 至 that warp point after raising 水之神殿 至 highest level, you can obtain this 骷髅蜥印章 使用 钩索 或 回旋镖."
+      },
+      "water_irons_central_gs": {
+        "name": "沃特神殿 (水之神殿) 中央 石柱 黄金骷髅蜥 使用 铁鞋",
+        "description": "After opening middle 水之神殿 level 门扇 落入 中央 石柱, 门扇 will stay unbarred so long as you do not leave 房间, even if you were 至 raise 水之神殿 up 至 highest level. 使用 铁鞋 至 go 穿透穿越 门扇 after 水之神殿 has been raised, you can obtain 骷髅蜥印章 使用 钩索."
+      },
+      "water_central_bow": {
+        "name": "沃特神殿 (水之神殿) 中央 弓箭 靶心 无需 长距离钩索 或 悬浮鞋",
+        "description": "very 高精度 弓箭 shot can 击打 眼眸 机关开关 从 地面 上方. Then, you can 跳跃 down 落入 走廊 与 make 穿透穿越 it before 大闸门 closes. It can also be done 幼年期, 使用 弹弓 instead 的 弓箭."
+      },
+      "water_hookshot_falling_platform_gs": {
+        "name": "沃特神殿 (水之神殿) 坠落 升降浮台 房间 黄金骷髅蜥 使用 钩索",
+        "description": "If you sta第二轮 在...上 very edge 的 升降浮台, this 黄金骷髅蜥 can be obtained 使用 仅限 钩索."
+      },
+      "water_rang_falling_platform_gs": {
+        "name": "沃特神殿 (水之神殿) 坠落 升降浮台 房间 黄金骷髅蜥 使用 回旋镖",
+        "description": "If you sta第二轮 在...上 very edge 的 升降浮台, this 黄金骷髅蜥 can be obtained 使用 仅限 回旋镖."
+      },
+      "water_river_gs": {
+        "name": "沃特神殿 (水之神殿) 河流 黄金骷髅蜥 无需 铁鞋",
+        "description": "Sta第二轮ing 在...上 exposed 地面 toward e第二轮 的 河流, 高精度 长距离钩索 use can obtain token. 长距离钩索 cannot normally 到达 far enough 至 kill 骷髅蜥, however. You'll 第一 have 至 fi第二轮 some other way 的 killing it."
+      },
+      "water_dragon_jump_dive": {
+        "name": "沃特神殿 (水之神殿) 神龙雕像 雕像 起跳俯冲潜水",
+        "description": "If you come 落入 神龙雕像 雕像 房间 从 serpent 河流, you can 侧跳 down 从上方 与 get 落入 tunnel 无需 needing either 铁鞋 或 鳞片. This trick applies 至 both Vanilla 与 Master Quest. 在...内 Vanilla, you must shoot 机关开关 从上方 使用 弓箭, 与 then quickly get 穿透穿越 tunnel before 大闸门 closes."
+      },
+      "water_adult_dragon": {
+        "name": "沃特神殿 (水之神殿) 神龙雕像 雕像 机关开关 从上方 水之神殿 青年期",
+        "description": "Normally you need both 钩索 与 铁鞋 至 击打 机关开关 与 游泳穿越 穿透穿越 tunnel 至 get 至 宝箱. But by hitting 机关开关 从 dry la第二轮, 使用 one 的 炸弹鼠, 钩索, 或 弓箭, it is possible 至 跳过 one 或 both 的 those 要求. After 大闸门 has been opened, besides 仅需 使用 铁鞋, 水井-timed 俯冲潜水 使用 在 least 银色鳞片 could be used 至 游泳穿越 穿透穿越 tunnel. If coming 从 serpent 河流, 起跳俯冲潜水 can also be used 至 get 落入 tunnel."
+      },
+      "water_child_dragon": {
+        "name": "沃特神殿 (水之神殿) 神龙雕像 雕像 机关开关 从上方 水之神殿 幼年期",
+        "description": "It is possible 用于 幼年期 至 击打 机关开关 从 dry la第二轮 使用 one 的 炸弹鼠, 弹弓 或 回旋镖. Then, 至 get 至 宝箱, 幼年期 can 俯冲潜水 穿透穿越 tunnel 使用 在 least 银色鳞片. timing 与 positioning 的 this 俯冲潜水 needs 至 be perfect 至 actually make it 下方 大闸门, 与 it all needs 至 be done very quickly 至 be able 至 get 穿透穿越 before 大闸门 closes. Be sure 至 enable \"沃特神殿 (水之神殿) 神龙雕像 雕像 机关开关 从上方 水之神殿 青年期\" 用于 青年期's variant 的 this trick."
+      },
+      "water_mq_central_pillar": {
+        "name": "沃特神殿 (水之神殿) 大师任务 (MQ) 中央 石柱 使用 火箭",
+        "description": "Slanted torches have misleading hitboxes. Whenever you see slanted 火把 jutting out 的 墙壁, you can expect most 或 all 的 its hitbox is actually 在...上 other 侧 that 墙壁. This can make slanted torches very finicky 至 光芒 when 使用 arrows. torches 在...内 中央 石柱 的 大师任务 (MQ) 沃特神殿 (水之神殿) are particularly egregious example. Logic normally expects 迪恩之火 与 时光之歌."
+      },
+      "water_iron_boots_ledge_grab": {
+        "name": "沃特神殿 (水之神殿) 高台平台 抓取 处于...状态时 浮出水面 使用 铁鞋",
+        "description": "Diving 在...内 front 的 高台平台 tapping B 至 游泳穿越 up faster, then equipping 铁鞋 处于...状态时 浮出水面 allows you 至 高台平台 抓取 至 higher 地面. This can be used 至 到达 高台平台 至 魔王首领 门扇 与 vanilla 罗盘 宝箱, 或 大师任务 (MQ) storage 房间"
+      },
+      "water_invisible_hookshot_target": {
+        "name": "沃特神殿 (水之神殿) 隐形 钩索 靶心",
+        "description": "隐形 钩索 geometry can be used 在...内 大师任务 (MQ) 至 get 越过 大闸门 that blocks you 从 going 至 this 骷髅蜥 提前获得, skipping small 钥匙 as 水井 as needing Hovers 或 稻草人 至 到达 locked 门扇. 在...内 vanilla this can be used 至 get 穿过 无需 bronze 鳞片."
+      },
+      "water_morpha_without_hookshot": {
+        "name": "沃特神殿 (水之神殿) 水魔水母 (莫尔法) 无需 钩索",
+        "description": "It is possible 至 slash 在 水魔水母 (莫尔法) 无需 钩索."
+      },
+      "lens_shadow": {
+        "name": "阴影神殿 (暗之神殿) 静止不走 物体 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 阴影神殿 (暗之神殿) 用于 most areas 在...内 dungeon except 用于 横渡跨越 移动巡逻 升降浮台 在...内 巨型 深坑 房间 与 用于 fighting 暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈)."
+      },
+      "lens_shadow_platform": {
+        "name": "阴影神殿 (暗之神殿) 隐形 移动巡逻 升降浮台 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 阴影神殿 (暗之神殿) 至 横渡跨越 隐形 移动巡逻 升降浮台 在...内 巨型 深坑 房间 在...内 either direction."
+      },
+      "lens_bongo": {
+        "name": "阴影神殿 (暗之神殿) 暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈) 无需 真实之镜",
+        "description": "暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈) can be defeated 无需 use 的 真实之镜, as 巨手 give pretty good idea 的 where 眼眸 is."
+      },
+      "shadow_umbrella_hover": {
+        "name": "阴影神殿 (暗之神殿) 石头 伞形巨石 跳过",
+        "description": "very 高精度 悬浮鞋 movement 从 弹离 的 下层 宝箱 can get you 在...上 top 的 坠落 尖刺 无需 needing 至 拉动 石块. Applies 至 both Vanilla 与 Master Quest."
+      },
+      "shadow_umbrella_clip": {
+        "name": "阴影神殿 (暗之神殿) 石头 伞形巨石 穿模穿墙",
+        "description": "Backflipping as 坠落 尖刺 fall clips 上方 无需 needing any other 要求. Applies 至 both Vanilla 与 Master Quest."
+      },
+      "shadow_umbrella_gs": {
+        "name": "阴影神殿 (暗之神殿) 坠落 尖刺 黄金骷髅蜥 使用 悬浮鞋",
+        "description": "After killing 骷髅蜥, very 高精度 悬浮鞋 movement 从 弹离 的 下层 宝箱 can get you 在...上 top 的 坠落 尖刺 无需 needing 至 拉动 石块. 从 there, another very 高精度 悬浮鞋 movement can be used 至 obtain token 无需 needing 钩索. Applies 至 both Vanilla 与 Master Quest."
+      },
+      "shadow_freestanding_key": {
+        "name": "阴影神殿 (暗之神殿) 露天散落 钥匙 使用 炸弹鼠",
+        "description": "Release 炸弹鼠 使用 good timing so that it explodes 靠近 bottom 的 瓦罐."
+      },
+      "shadow_statue": {
+        "name": "阴影神殿 (暗之神殿) 河流 雕像 使用 炸弹鼠",
+        "description": "By se第二轮ing 炸弹鼠 绕过 edge 的 gorge, you can knock down 雕像 无需 needing 弓箭. Applies 在...内 both Vanilla 与 大师任务 (MQ) 阴影."
+      },
+      "shadow_bongo": {
+        "name": "阴影神殿 (暗之神殿) 暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈) 无需 投射物",
+        "description": "使用 高精度 sword slashes, 暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈) can be defeated 无需 使用 投射物. This is 仅限 relevant 在...内 conjunction 使用 阴影神殿 (暗之神殿) dungeon shortcuts 或 shuffled 魔王首领 entrances."
+      },
+      "lens_shadow_mq": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 静止不走 物体 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 阴影神殿 (暗之神殿) 大师任务 (MQ) 用于 most areas 在...内 dungeon. See \"阴影神殿 (暗之神殿) 大师任务 (MQ) 隐形 移动巡逻 升降浮台 无需 真实之镜\", \"阴影神殿 (暗之神殿) 大师任务 (MQ) 隐形 刀刃 银卢比 无需 真实之镜\", \"阴影神殿 (暗之神殿) 大师任务 (MQ) 第二轮 死手 (尸手鬼) 无需 真实之镜\", 与 \"阴影神殿 (暗之神殿) 暗之眼魔 (邦戈邦戈) 暗之眼魔 (邦戈邦戈) 无需 真实之镜\" 用于 exceptions."
+      },
+      "lens_shadow_mq_invisible_blades": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 隐形 刀刃 银卢比 无需 真实之镜",
+        "description": "Removes requirement 用于 真实之镜 或 奈鲁之爱 在...内 阴影神殿 (暗之神殿) 大师任务 (MQ) 用于 隐形 刀刃 房间 银卢比 collection."
+      },
+      "lens_shadow_mq_platform": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 隐形 移动巡逻 升降浮台 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 阴影神殿 (暗之神殿) 大师任务 (MQ) 至 横渡跨越 隐形 移动巡逻 升降浮台 在...内 巨型 深坑 房间 在...内 either direction."
+      },
+      "lens_shadow_mq_deadhand": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 第二轮 死手 (尸手鬼) 无需 真实之镜",
+        "description": "死手 (尸手鬼) spawns 在...内 ra第二轮om spot within 房间. Having Lens removes hassle 的 having 至 comb 房间 looking 用于 his spawn location."
+      },
+      "shadow_mq_gap": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 真实 旋转 鸿沟缺口 使用 长距离钩索",
+        "description": "You can 长距离钩索 火把 与 跳跃-slash recoil 跳上 tongue. It works best if you 长距离钩索 right 火把 从 左侧 的 房间."
+      },
+      "shadow_mq_invisible_blades": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 隐形 刀刃 无需 时光之歌",
+        "description": "Like Like can be used 至 boost you 落入 银卢比 或 Recovery 心心 that normally require 时光之歌. This cannot be performed 在...上 OHKO since Like Like does not boost you high enough if you die."
+      },
+      "shadow_mq_huge_pit": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 下层 巨型 深坑 无需 火焰 源头",
+        "description": "Normally 冰冻 眼眸 机关开关 spawns some platforms that you can use 至 攀爬 down, but there's actually small piece 的 地面 that you can sta第二轮 在...上 that you can 仅需 跳跃 down 至."
+      },
+      "shadow_mq_windy_walkway": {
+        "name": "阴影神殿 (暗之神殿) 大师任务 (MQ) 狂风呼啸 步道 逆向 无需 悬浮鞋",
+        "description": "It is possible 至 跳跃 从 凹陷壁龛 在...内 狂风呼啸 走廊 至 middle 升降浮台. There are 两个 methods: wait out fan opposite 门扇 与 hold forward, 或 跳跃 至 right 至 be pushed by fan there towards 升降浮台 高台平台. Note that 跳跃 的 this distance are inconsistent, but still possible."
+      },
+      "lens_spirit": {
+        "name": "魂之神殿 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 魂之神殿."
+      },
+      "spirit_child_chu": {
+        "name": "魂之神殿 幼年期 侧 桥梁 使用 炸弹鼠",
+        "description": "carefully-timed 炸弹鼠 can 击打 机关开关."
+      },
+      "spirit_west_ledge": {
+        "name": "魂之神殿 雕像 房间 西侧 高台平台 点位 使用 回旋镖",
+        "description": "By carefully walking 跳上 上层 arm 的 雕像, it's possible 至 get good angle 在...上 黄金骷髅蜥 (在...内 Vanilla) 与 farthest 瓦罐 (在...内 大师任务 (MQ)) 至 collect 点位 使用 回旋镖. nearest 瓦罐 在...内 大师任务 (MQ) can be reached 从 forearm 与 is always 在...内 logic."
+      },
+      "spirit_lower_adult_switch": {
+        "name": "魂之神殿 下层 青年期 机关开关 使用 炸弹",
+        "description": "炸弹 can be used 至 击打 机关开关 在...上 天花板, but it must be thrown 从 particular distance away 与 使用 高精度 timing."
+      },
+      "spirit_statue_jump": {
+        "name": "魂之神殿 雕像 房间 跳跃 从 巨手 至 上层 高台边缘",
+        "description": "高精度 跳跃 至 obtain following 青年期 无需 needing one 的 悬浮鞋, 或 钩索 (在...内 Vanilla) 或 时光之歌 (在...内 大师任务 (MQ)): - 魂之神殿 雕像 房间 Northeast 宝箱 - 魂之神殿 黄金骷髅蜥 大厅 - 魂之神殿 大师任务 (MQ) 中央 Chamber Top 左侧 瓦罐 (左侧) - 魂之神殿 大师任务 (MQ) 中央 Chamber Top 左侧 瓦罐 (Right)"
+      },
+      "spirit_platform_hookshot": {
+        "name": "魂之神殿 主 房间 钩索 至 魔王首领 升降浮台",
+        "description": "高精度 钩索 aiming 在 升降浮台 chains can be used 至 到达 魔王首领 升降浮台 从 middle la第二轮ings. 使用 跳斩 immediately after reaching chain makes aiming more lenient. Relevant 仅限 when 魂之神殿 魔王首领 shortcuts are 在...上."
+      },
+      "spirit_map_chest": {
+        "name": "魂之神殿 地图 宝箱 使用 弓箭",
+        "description": "至 get line 的 sight 从 上层 火把 至 地图 宝箱 torches, you must 拉动 阿莫斯石像 all way up 楼梯."
+      },
+      "spirit_sun_chest": {
+        "name": "魂之神殿 太阳 石块 房间 宝箱 使用 弓箭",
+        "description": "使用 blocks 在...内 房间 as platforms you can get lines 的 sight 至 all three torches. timer 在...上 torches is quite short so you must move quickly 在...内 order 至 光芒 all three. 后空翻 can be used instead 至 光芒 torches 无需 pushing blocks."
+      },
+      "spirit_wall": {
+        "name": "魂之神殿 流沙移动 墙壁 使用 无需 附加 道具",
+        "description": "Logic normally guarantees way 的 dealing 使用 both Beamos 与 Walltula before climbing 墙壁."
+      },
+      "lens_spirit_mq": {
+        "name": "魂之神殿 大师任务 (MQ) 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 魂之神殿 大师任务 (MQ)."
+      },
+      "spirit_mq_sun_block_sot": {
+        "name": "魂之神殿 大师任务 (MQ) 太阳 石块 房间 幼年期 无需 时光之歌",
+        "description": "处于...状态时 青年期 can easily 跳跃 directly 至 机关开关 that unbars 门扇 至 太阳 石块 房间, 幼年期 林克 cannot make 跳跃 无需 spawning 时光之歌 石块 至 跳跃 从. You can 跳过 this by throwing 箱子 down 跳上 机关开关 从上方, which does unbar 门扇, however 箱子 immediately breaks, so you must move quickly 至 get 穿透穿越 门扇 before it closes back up."
+      },
+      "spirit_mq_sun_block_gs": {
+        "name": "魂之神殿 大师任务 (MQ) 太阳 石块 房间 黄金骷髅蜥 使用 回旋镖",
+        "description": "投掷 回旋镖 在...内 such way that it curves 穿透穿越 侧 的 glass 石块 至 击打 黄金骷髅蜥."
+      },
+      "spirit_mq_lower_adult": {
+        "name": "魂之神殿 大师任务 (MQ) 下层 青年期 无需 火箭",
+        "description": "By sta第二轮ing 在...内 高精度 position it is possible 至 光芒 两个 的 torches 使用 single use 的 迪恩之火. This saves enough time 至 be able 至 光芒 all three torches 使用 仅限 迪恩之火."
+      },
+      "spirit_mq_frozen_eye": {
+        "name": "魂之神殿 大师任务 (MQ) 冰冻 眼眸 机关开关 无需 火焰",
+        "description": "You can melt ice by shooting arrow 穿透穿越 火把. 仅限 way 至 fi第二轮 line 的 sight 用于 this shot is 至 第一 spawn 时光之歌 石块, 与 then sta第二轮 在...上 very edge 的 it."
+      },
+      "ice_stalagmite_clip": {
+        "name": "冰之洞窟 石笋穿模",
+        "description": "Most 石笋 blocking path 在...内 冰之洞窟 can be clipped 穿过 使用 basic movement. Also applies 至 水之神殿 试炼房间."
+      },
+      "ice_stalagmite_hookshot": {
+        "name": "冰之洞窟 石笋 使用 钩索",
+        "description": "Shooting 石笋 使用 钩索 在...内 right way also breaks them. Also applies 至 水之神殿 试炼房间."
+      },
+      "ice_block_gs": {
+        "name": "冰之洞窟 石块 房间 黄金骷髅蜥 使用 悬浮鞋",
+        "description": "悬浮鞋 can be used 至 get 在...内 front 的 骷髅蜥 至 kill it 使用 跳斩. Then, 悬浮鞋 can again be used 至 obtain Token, all 无需 钩索 或 回旋镖."
+      },
+      "ice_mq_red_ice_gs": {
+        "name": "冰之洞窟 大师任务 (MQ) 红冰 黄金骷髅蜥 无需 时光之歌",
+        "description": "If you 侧-hop 落入 perfect position, you can briefly sta第二轮 在...上 升降浮台 使用 红冰 仅需 long enough 至 dump some 蓝火."
+      },
+      "ice_mq_scarecrow": {
+        "name": "冰之洞窟 大师任务 (MQ) 稻草人 黄金骷髅蜥 使用 无需 附加 道具",
+        "description": "青年期 高精度 跳跃 can be used 至 到达 this 凹陷壁龛."
+      },
+      "lens_gtg": {
+        "name": "格鲁德训练场 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 格鲁德训练场."
+      },
+      "gtg_without_hookshot": {
+        "name": "格鲁德训练场 左侧 银卢比 无需 钩索",
+        "description": "After collecting rest 的 银卢比 在...内 房间, you can 到达 final 银卢比 在...上 天花板 by being pulled up 落入 it after getting grabbed by Wallmaster. Then, you must also 到达 出口离开 的 房间 无需 use 的 钩索. If you move quickly you can 潜行绕过 穿过 edge 的 烈焰 墙壁 before it can rise up 至 石块 you. 至 do so 无需 承受 受击伤害 is more 高精度."
+      },
+      "gtg_fake_wall": {
+        "name": "到达 格鲁德训练场 假 墙壁 高台平台 使用 悬浮鞋",
+        "description": "高精度 悬浮鞋 use 从 top 的 宝箱 can allow you 至 抓取 高台平台 无需 needing usual 要求. 在...内 Master Quest, this always 跳过 时光之歌 requirement. 在...内 Vanilla, this 跳过 钩索 requirement, but is 仅限 relevant if \"格鲁德训练场 左侧 银卢比 无需 钩索\" is enabled."
+      },
+      "gtg_lava_jump": {
+        "name": "格鲁德训练场 无需道具 岩浆 房间 跳跃",
+        "description": "高精度 翻滚 跳跃 can be used 至 跳跃 之间 all but furthest platforms 在...内 岩浆 房间."
+      },
+      "gtg_statue_jump": {
+        "name": "格鲁德训练场 雕像 房间 跳跃",
+        "description": "高精度 翻滚 跳跃 或 跳跃 与 跳斩 can be used 至 跳跃 从 上层 高台平台 至 one 的 pillars 在...内 眼眸 雕像 房间."
+      },
+      "lens_gtg_mq": {
+        "name": "格鲁德训练场 大师任务 (MQ) 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 格鲁德训练场 大师任务 (MQ)."
+      },
+      "gtg_mq_with_hookshot": {
+        "name": "格鲁德训练场 大师任务 (MQ) 左侧 银卢比 使用 钩索",
+        "description": "highest 银卢比 can be obtained by hookshooting 靶心 与 then immediately jumpslashing toward 卢比."
+      },
+      "gtg_mq_without_hookshot": {
+        "name": "格鲁德训练场 大师任务 (MQ) 左侧 银卢比 无需 钩索",
+        "description": "After collecting rest 的 银卢比 在...内 房间, you can 到达 final 银卢比 在...上 天花板 by being pulled up 落入 it after getting grabbed by Wallmaster. Wallmaster will not track you 至 directly u第二轮erneath 卢比. You should take last step 至 be 下方 卢比 after Wallmaster has begun its attempt 至 抓取 you. Also included 使用 this trick is that fact that 机关开关 that unbars 门扇 至 final 宝箱 的 GTG can be 击打 无需 projectile, 使用 高精度 跳斩. This trick supersedes \"格鲁德训练场 大师任务 (MQ) 左侧 银卢比 使用 钩索\"."
+      },
+      "lens_ganon": {
+        "name": "加农城堡 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 加农城堡."
+      },
+      "ganon_spirit_trial_hookshot": {
+        "name": "魂之神殿 试炼房间 无需 钩索",
+        "description": "highest 卢比 can be obtained 青年期 by performing 高精度 跳跃 与 水井-timed 跳斩 弹离 的 阿莫斯石像."
+      },
+      "lens_ganon_mq": {
+        "name": "加农城堡 大师任务 (MQ) 无需 真实之镜",
+        "description": "Removes 要求 用于 真实之镜 在...内 加农城堡 大师任务 (MQ)."
+      },
+      "ganon_mq_fire_trial": {
+        "name": "火焰 试炼房间 大师任务 (MQ) 使用 钩索",
+        "description": "It's possible 至 hook 靶心 在 e第二轮 的 火焰 试炼房间 使用 仅需 钩索, but it 需要 高精度 aim 与 perfect positioning. 主 difficulty comes 从 getting 在...上 very corner 的 obelisk 无需 坠落 落入 岩浆."
+      },
+      "ganon_mq_shadow_trial": {
+        "name": "阴影 试炼房间 大师任务 (MQ) 火把 使用 弓箭",
+        "description": "You can 光芒 火把 在...内 this 房间 无需 火焰 源头 by shooting arrow 穿透穿越 lit 火把 在 beginning 的 房间. Because 房间 is so dark 与 unlit 火把 is so far away, it can be 高难度 至 aim shot correctly."
+      },
+      "ganon_mq_light_trial": {
+        "name": "光芒 试炼房间 大师任务 (MQ) 无需 钩索",
+        "description": "If you move quickly you can 潜行绕过 穿过 edge 的 烈焰 墙壁 before it can rise up 至 石块 you. 在...内 this case 至 do it 无需 承受 受击伤害 is especially 高精度."
+      }
+    }
+  }
+}

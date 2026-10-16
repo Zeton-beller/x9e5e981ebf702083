@@ -32,6 +32,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Apply patches for Switch Chinese font support
+        run: python3 scripts/apply_patches.py
+
       - name: Build SoH NRO for Nintendo Switch
         run: |
           cmake -H. -Bbuild-switch -GNinja \
@@ -46,6 +49,7 @@ jobs:
         run: |
           strings soh.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese not found in strings"
           strings soh.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr not found in strings"
+          strings soh.nro | grep "系统设置" || echo "Warning: Chinese menu strings not found in strings"
 
       - name: Package Switch Chinese Release
         run: |

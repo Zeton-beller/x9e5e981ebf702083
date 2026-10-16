@@ -1,4 +1,5 @@
 #include "SohMenu.h"
+#include "SohMenuLocalization.h"
 #include <ship/window/gui/GuiMenuBar.h>
 #include <ship/window/gui/GuiElement.h>
 #include <ship/utils/StringHelper.h>
@@ -98,6 +99,8 @@ void SohMenu::AddMenuElements() {
     for (auto& initFunc : MenuInit::GetInitFuncs()) {
         initFunc();
     }
+
+    ApplySohMenuLocalization(menuEntries);
 
     mMenuElementsInitialized = true;
 }
