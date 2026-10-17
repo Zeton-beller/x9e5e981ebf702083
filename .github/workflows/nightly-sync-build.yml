@@ -83,10 +83,10 @@ jobs:
       - name: Fix dubious ownership
         run: git config --global --add safe.directory '*'
 
-      - name: Install build tools and host dependencies
+      - name: Install build tools, ccache and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt 2>/dev/null || echo "libsdl2-dev libpng-dev libgles2-mesa-dev ninja-build") zip git curl
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt 2>/dev/null || echo "libsdl2-dev libpng-dev libgles2-mesa-dev ninja-build") zip git curl ccache
           sudo apt-get remove -y cmake || true
           sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
           pip install --break-system-packages cryptography
@@ -99,6 +99,24 @@ jobs:
           submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore compilation cache (ccache)
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-switch-${{ hashFiles('CMakeLists.txt', 'soh/CMakeLists.txt') }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-switch-${{ hashFiles('CMakeLists.txt', 'soh/CMakeLists.txt') }}-
+            ccache-switch-
+
+      - name: Configure ccache environment
+        run: |
+          mkdir -p .ccache
+          export CCACHE_DIR="${PWD}/.ccache"
+          ccache --set-config=max_size=3G
+          ccache --set-config=compression=true
+          ccache --zero-stats
+          echo "CCACHE_DIR=${PWD}/.ccache" >> $GITHUB_ENV
 
       - name: Sync upstream commits if needed
         run: |
@@ -115,31 +133,45 @@ jobs:
             git push origin HEAD:${{ github.ref_name }} || echo "Push to origin failed or skipped (will build anyway)"
           fi
 
-      - name: "Build Host Tools & Generate soh.o2r (同步生成最新 O2R 资源包)"
+      - name: Check cached soh.o2r asset package
+        id: o2r-cache
+        uses: actions/cache@v4
+        with:
+          path: ./soh.o2r
+          key: soh-o2r-${{ hashFiles('soh/assets/**', 'soh/assets/custom/**') }}
+
+      - name: "Build Host Tools & Generate soh.o2r (若资产未变动则直接复用缓存)"
+        if: steps.o2r-cache.outputs.cache-hit != 'true'
         run: |
-          echo "=== 正在编译 GenerateSohOtr 并打包生成最新 soh.o2r ==="
+          echo "=== 资产有变动或无缓存，编译 GenerateSohOtr 并生成最新 soh.o2r ==="
           cmake --no-warn-unused-cli -H. -Bbuild-tools -GNinja \
             -DCMAKE_BUILD_TYPE:STRING=Release \
-            -DSOH_TOOLS_ONLY=ON
+            -DSOH_TOOLS_ONLY=ON \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build-tools --config Release --target GenerateSohOtr -j$(nproc)
           if [ -f build-tools/soh/soh.o2r ]; then
             cp -v build-tools/soh/soh.o2r ./soh.o2r
           fi
-          echo "soh.o2r 文件大小与校验:"
+          echo "soh.o2r 生成完成，大小:"
           ls -lh soh.o2r
 
-      - name: "Build Switch soh.nro (编译原生英文配置菜单 + 神游中文剧情版)"
+      - name: "Build Switch soh.nro (带 ccache 增量编译加速)"
         run: |
-          echo "=== 正在为 Nintendo Switch 交叉编译 soh.nro ==="
+          echo "=== 正在为 Nintendo Switch 交叉编译 soh.nro (挂载 ccache 缓存) ==="
           cmake -H. -Bbuild -GNinja \
             -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
             -DCMAKE_BUILD_TYPE:STRING=Release \
             -DBUILD_REMOTE_CONTROL=1 \
-            -DDISABLE_SCRIPTING=1
+            -DDISABLE_SCRIPTING=1 \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build --target soh_nro --config Release -j$(nproc)
           cp build/soh/*.nro ./soh.nro
           echo "构建完成: soh.nro"
           ls -lh soh.nro
+          echo "=== ccache 缓存命中统计报告 ==="
+          ccache -s
 
       - name: Verify Chinese symbols in NRO
         run: |
@@ -169,14 +201,14 @@ jobs:
             soh.o2r
             soh-switch-nightly-cn.zip
 
-      - name: Publish Nightly Release
-        if: ${{ github.event.inputs.create_release != 'false' }}
+      - name: Automatically Publish to GitHub Releases (自动发布最新构建)
+        if: success()
         run: |
           SHORT_SHA=$(echo "${{ needs.check-upstream.outputs.upstream_sha }}" | cut -c1-7)
           TAG_NAME="nightly-${SHORT_SHA}"
           RELEASE_TITLE="SoH Switch Nightly 每日构建 (基于官方 ${SHORT_SHA} + 中文剧情)"
           
-          # 创建或更新 Release
+          # 创建基于当前版本的固定 Release
           gh release delete "${TAG_NAME}" -y 2>/dev/null || true
           gh release create "${TAG_NAME}" \
             soh-switch-nightly-cn.zip \
@@ -185,7 +217,7 @@ jobs:
             --title "${RELEASE_TITLE}" \
             --notes "### 自动同步构建说明
           - **官方主干 Commit**: [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }})
-          - **修复特性**:
+          - **构建特性**:
             - 包含官方 PR #1306 / #1314：彻底修复 9.3.0 在高清纹理包下林克嘴巴、脸部与装备的拉伸歪斜问题。
             - 包含 PR #1164：彻底修复水面与岩浆纹理在 >20fps 下的闪烁抖动问题。
             - 彻底移除 ImGui 菜单字体注入，配置菜单 100% 保持 Switch 原生英文，杜绝字库显存溢出与黑色方块 Bug。
@@ -194,5 +226,15 @@ jobs:
           ### 安装方法
           将解压后的 \`switch/soh/\` 文件夹完整拷贝至 Switch 的 SD 卡根目录 \`switch/\` 目录下，并放入使用 PC 版提取生成的 \`oot.o2r\` 游戏资产即可畅玩。" \
             --prerelease
+            
+          # 同步更新永久最新固态 Release (TAG: latest)
+          gh release delete "latest" -y 2>/dev/null || true
+          gh release create "latest" \
+            soh-switch-nightly-cn.zip \
+            soh.nro \
+            soh.o2r \
+            --title "SoH Switch Nightly 最新直链下载 (每日自动更新)" \
+            --notes "本 Release 为自动生成的最新构建版本。基于官方主干最新提交 [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }})。" \
+            --prerelease || echo "Rolling release update done"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
