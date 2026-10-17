@@ -118,18 +118,38 @@ jobs:
           ccache --zero-stats
           echo "CCACHE_DIR=${PWD}/.ccache" >> $GITHUB_ENV
 
-      - name: Sync upstream commits if needed
+      - name: Sync upstream commits and extract changelog
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/HarbourMasters/Shipwright.git || true
+          git fetch upstream develop --depth 50
+
+          PREV_SHA=""
+          if [ -f .upstream_sync_sha ]; then
+            PREV_SHA=$(cat .upstream_sync_sha | tr -d '[:space:]')
+          fi
+          NEW_SHA="${{ needs.check-upstream.outputs.upstream_sha }}"
+
+          # 提取官方增量更新日志并生成 Markdown 列表
+          if [ -n "$PREV_SHA" ] && [ "$PREV_SHA" != "$NEW_SHA" ]; then
+            git log --no-merges --pretty=format:"- [%h](https://github.com/HarbourMasters/Shipwright/commit/%H) %s (%an)" "${PREV_SHA}..${NEW_SHA}" > upstream_changelog.md || true
+          fi
+
+          if [ ! -s upstream_changelog.md ]; then
+            # 若无增量（如手动触发或首次构建），提取官方最新 10 条提交日志
+            git log -n 10 --no-merges --pretty=format:"- [%h](https://github.com/HarbourMasters/Shipwright/commit/%H) %s (%an)" upstream/develop > upstream_changelog.md || true
+          fi
+
+          echo "=== 提取到的官方更新日志 ==="
+          cat upstream_changelog.md
+
           if [ "${{ needs.check-upstream.outputs.sync_needed }}" = "true" ]; then
-            echo "=== 同步上游官方主干最新提交 ==="
-            git remote add upstream https://github.com/HarbourMasters/Shipwright.git || true
-            git fetch upstream develop --depth 50
+            echo "=== 合并上游官方主干最新提交 ==="
             git merge upstream/develop -m "chore(sync): auto-merge upstream develop into Switch Chinese build"
-            echo "${{ needs.check-upstream.outputs.upstream_sha }}" > .upstream_sync_sha
+            echo "${NEW_SHA}" > .upstream_sync_sha
             git add .upstream_sync_sha
-            git commit -m "chore(sync): update upstream sync sha to ${{ needs.check-upstream.outputs.upstream_sha }}" || true
+            git commit -m "chore(sync): update upstream sync sha to ${NEW_SHA}" || true
             git push origin HEAD:${{ github.ref_name }} || echo "Push to origin failed or skipped (will build anyway)"
           fi
 
@@ -206,35 +226,46 @@ jobs:
         run: |
           SHORT_SHA=$(echo "${{ needs.check-upstream.outputs.upstream_sha }}" | cut -c1-7)
           TAG_NAME="nightly-${SHORT_SHA}"
-          RELEASE_TITLE="SoH Switch Nightly 每日构建 (基于官方 ${SHORT_SHA} + 中文剧情)"
-          
-          # 创建基于当前版本的固定 Release
+          RELEASE_TITLE="SoH Switch Nightly (${SHORT_SHA})"
+
+          # 组装纯净的 Release Notes：仅展示官方主干更新
+          cat << 'EOF' > release_notes.md
+          ### 🌟 本次合并的官方主干更新 (Upstream Updates)
+          EOF
+
+          if [ -f upstream_changelog.md ] && [ -s upstream_changelog.md ]; then
+            cat upstream_changelog.md >> release_notes.md
+          else
+            echo "- 基于官方主干最新提交 [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }}) 编译构建。" >> release_notes.md
+          fi
+
+          cat << 'EOF' >> release_notes.md
+
+          ### 📦 安装使用
+          将解压后的 `switch/soh/` 目录完整拷贝至 Switch 的 SD 卡根目录 `switch/` 下，并放入 `oot.o2r` 游戏资产文件即可。
+          EOF
+
+          echo "=== 准备发布的 Release 说明 ==="
+          cat release_notes.md
+
+          # 创建或更新 Release
           gh release delete "${TAG_NAME}" -y 2>/dev/null || true
           gh release create "${TAG_NAME}" \
             soh-switch-nightly-cn.zip \
             soh.nro \
             soh.o2r \
             --title "${RELEASE_TITLE}" \
-            --notes "### 自动同步构建说明
-          - **官方主干 Commit**: [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }})
-          - **构建特性**:
-            - 包含官方 PR #1306 / #1314：彻底修复 9.3.0 在高清纹理包下林克嘴巴、脸部与装备的拉伸歪斜问题。
-            - 包含 PR #1164：彻底修复水面与岩浆纹理在 >20fps 下的闪烁抖动问题。
-            - 彻底移除 ImGui 菜单字体注入，配置菜单 100% 保持 Switch 原生英文，杜绝字库显存溢出与黑色方块 Bug。
-            - 完整保留 3D 游戏内神游 (iQue) 官方全中文剧情对话与 24x24 点阵字模渲染。
-          
-          ### 安装方法
-          将解压后的 \`switch/soh/\` 文件夹完整拷贝至 Switch 的 SD 卡根目录 \`switch/\` 目录下，并放入使用 PC 版提取生成的 \`oot.o2r\` 游戏资产即可畅玩。" \
+            --notes-file release_notes.md \
             --prerelease
-            
-          # 同步更新永久最新固态 Release (TAG: latest)
+
+          # 同步更新永久最新滚动 Release (TAG: latest)
           gh release delete "latest" -y 2>/dev/null || true
           gh release create "latest" \
             soh-switch-nightly-cn.zip \
             soh.nro \
             soh.o2r \
-            --title "SoH Switch Nightly 最新直链下载 (每日自动更新)" \
-            --notes "本 Release 为自动生成的最新构建版本。基于官方主干最新提交 [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }})。" \
+            --title "SoH Switch Nightly 最新直链下载" \
+            --notes-file release_notes.md \
             --prerelease || echo "Rolling release update done"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
