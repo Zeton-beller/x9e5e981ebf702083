@@ -226,9 +226,21 @@ jobs:
             soh.nro
             soh.o2r
             soh-switch-nightly-cn.zip
+            upstream_changelog.md
 
-      - name: Automatically Publish to GitHub Releases (自动发布最新构建)
-        if: success()
+  publish-release:
+    name: "Publish to GitHub Releases (自动发布最新构建)"
+    needs: [check-upstream, build-switch]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: soh-switch-nightly-cn
+
+      - name: Publish Release via GitHub CLI
         run: |
           SHORT_SHA=$(echo "${{ needs.check-upstream.outputs.upstream_sha }}" | cut -c1-7)
           TAG_NAME="nightly-${SHORT_SHA}"
