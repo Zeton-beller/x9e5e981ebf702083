@@ -255,7 +255,7 @@ void FileChoose_UpdateBossRushMenu(GameState* gameState) {
 }
 
 void FileChoose_DrawBossRushMenuWindowContents(FileChooseContext* fileChooseContext) {
-    uint8_t language = (gSaveContext.language == LANGUAGE_JPN) ? (uint8_t)LANGUAGE_ENG : gSaveContext.language;
+    uint8_t language = ((gSaveContext.language == LANGUAGE_JPN) || (gSaveContext.language == LANGUAGE_CHI)) ? (uint8_t)LANGUAGE_ENG : gSaveContext.language;
     uint8_t listOffset = fileChooseContext->bossRushOffset;
     int16_t textAlpha = fileChooseContext->bossRushUIAlpha;
 
@@ -662,6 +662,8 @@ static void* sSavePromptNoChoiceTexs[] = {
     (void*)gPauseNoENGTex,
     (void*)gPauseNoGERTex,
     (void*)gPauseNoFRATex,
+    (void*)gPauseNoENGTex, // LANGUAGE_JPN — fallback to English
+    (void*)gPauseNoCHITex, // LANGUAGE_CHI
 };
 
 void BossRush_OnVanillaBehaviorHandler(GIVanillaBehavior id, bool* should, va_list originalArgs) {

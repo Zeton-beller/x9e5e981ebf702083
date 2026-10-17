@@ -109,6 +109,36 @@ static void* sSaveENGTexs[] = {
     gPauseSave20Tex,    gPauseSave21Tex, gPauseSave22Tex, gPauseSave23Tex, gPauseSave24Tex,
 };
 
+// #region SOH [Chinese]
+static void* sEquipmentCHITexs[] = {
+    gPauseEquipment00Tex,    gPauseEquipment01Tex, gPauseEquipment02Tex, gPauseEquipment03Tex, gPauseEquipment04Tex,
+    gPauseEquipment10CHITex, gPauseEquipment11Tex, gPauseEquipment12Tex, gPauseEquipment13Tex, gPauseEquipment14Tex,
+    gPauseEquipment20Tex,    gPauseEquipment21Tex, gPauseEquipment22Tex, gPauseEquipment23Tex, gPauseEquipment24Tex,
+};
+static void* sSelectItemCHITexs[] = {
+    gPauseSelectItem00CHITex, gPauseSelectItem01Tex,    gPauseSelectItem02Tex,    gPauseSelectItem03Tex,
+    gPauseSelectItem04Tex,    gPauseSelectItem10CHITex, gPauseSelectItem11Tex,    gPauseSelectItem12Tex,
+    gPauseSelectItem13Tex,    gPauseSelectItem14Tex,    gPauseSelectItem20CHITex, gPauseSelectItem21Tex,
+    gPauseSelectItem22Tex,    gPauseSelectItem23Tex,    gPauseSelectItem24Tex,
+};
+static void* sMapCHITexs[] = {
+    gPauseMap00Tex,    gPauseMap01Tex, gPauseMap02Tex, gPauseMap03Tex, gPauseMap04Tex,
+    gPauseMap10CHITex, gPauseMap11Tex, gPauseMap12Tex, gPauseMap13Tex, gPauseMap14Tex,
+    gPauseMap20Tex,    gPauseMap21Tex, gPauseMap22Tex, gPauseMap23Tex, gPauseMap24Tex,
+};
+static void* sQuestStatusCHITexs[] = {
+    gPauseQuestStatus00CHITex, gPauseQuestStatus01Tex,    gPauseQuestStatus02Tex,    gPauseQuestStatus03Tex,
+    gPauseQuestStatus04Tex,    gPauseQuestStatus10CHITex, gPauseQuestStatus11Tex,    gPauseQuestStatus12Tex,
+    gPauseQuestStatus13Tex,    gPauseQuestStatus14Tex,    gPauseQuestStatus20CHITex, gPauseQuestStatus21Tex,
+    gPauseQuestStatus22Tex,    gPauseQuestStatus23Tex,    gPauseQuestStatus24Tex,
+};
+static void* sSaveCHITexs[] = {
+    gPauseSave00Tex,    gPauseSave01Tex, gPauseSave02Tex, gPauseSave03Tex, gPauseSave04Tex,
+    gPauseSave10CHITex, gPauseSave11Tex, gPauseSave12Tex, gPauseSave13Tex, gPauseSave14Tex,
+    gPauseSave20Tex,    gPauseSave21Tex, gPauseSave22Tex, gPauseSave23Tex, gPauseSave24Tex,
+};
+// #endregion
+
 static void* sEquipmentJPNTexs[] = {
     gPauseEquipment00Tex,    gPauseEquipment01Tex, gPauseEquipment02Tex, gPauseEquipment03Tex, gPauseEquipment04Tex,
     gPauseEquipment10JPNTex, gPauseEquipment11Tex, gPauseEquipment12Tex, gPauseEquipment13Tex, gPauseEquipment14Tex,
@@ -219,6 +249,7 @@ static void* sEquipmentTexs[] = {
     sEquipmentGERTexs,
     sEquipmentFRATexs,
     sEquipmentJPNTexs,
+    sEquipmentCHITexs, // LANGUAGE_CHI
 };
 
 static void* sSelectItemTexs[] = {
@@ -226,6 +257,7 @@ static void* sSelectItemTexs[] = {
     sSelectItemGERTexs,
     sSelectItemFRATexs,
     sSelectItemJPNTexs,
+    sSelectItemCHITexs, // LANGUAGE_CHI
 };
 
 static void* sMapTexs[] = {
@@ -233,6 +265,7 @@ static void* sMapTexs[] = {
     sMapGERTexs,
     sMapFRATexs,
     sMapJPNTexs,
+    sMapCHITexs, // LANGUAGE_CHI
 };
 
 static void* sQuestStatusTexs[] = {
@@ -240,6 +273,7 @@ static void* sQuestStatusTexs[] = {
     sQuestStatusGERTexs,
     sQuestStatusFRATexs,
     sQuestStatusJPNTexs,
+    sQuestStatusCHITexs, // LANGUAGE_CHI
 };
 
 static void* sSaveTexs[] = {
@@ -247,6 +281,7 @@ static void* sSaveTexs[] = {
     sSaveGERTexs,
     sSaveFRATexs,
     sSaveJPNTexs,
+    sSaveCHITexs, // LANGUAGE_CHI
 };
 
 static void* iconNameTextures[] = {
@@ -746,6 +781,130 @@ static void* iconNameTextures[] = {
     gUnusedBossKeyItemName6JPNTex,
     gUnusedBossKeyItemName7JPNTex,
     gBiggoronsSwordItemNameJPNTex,
+    // LANGUAGE_CHI
+    gDekuStickItemNameCHITex,
+    gDekuNutItemNameCHITex,
+    gBombItemNameCHITex,
+    gFairyBowItemNameCHITex,
+    gFireArrowItemNameCHITex,
+    gDinsFireItemNameCHITex,
+    gFairySlingshotItemNameCHITex,
+    gFairyOcarinaItemNameCHITex,
+    gOcarinaOfTimeItemNameCHITex,
+    gBombchuItemNameCHITex,
+    gHookshotItemNameCHITex,
+    gLongshotItemNameCHITex,
+    gIceArrowItemNameCHITex,
+    gFaroresWindItemNameCHITex,
+    gBoomerangItemNameCHITex,
+    gLensItemNameCHITex,
+    gMagicBeansItemNameCHITex,
+    gMegatonHammerItemNameCHITex,
+    gLightArrowItemNameCHITex,
+    gNayrusLoveItemNameCHITex,
+    gEmptyBottleItemNameCHITex,
+    gRedPotionItemNameCHITex,
+    gGreenPotionItemNameCHITex,
+    gBluePotionItemNameCHITex,
+    gBottledFairyItemNameCHITex,
+    gFishItemNameCHITex,
+    gFullMilkItemNameCHITex,
+    gRutosLetterItemNameCHITex,
+    gBlueFireItemNameCHITex,
+    gBugItemNameCHITex,
+    gBigPoeItemNameCHITex,
+    gHalfMilkItemNameCHITex,
+    gPoeItemNameCHITex,
+    gWeirdEggItemNameCHITex,
+    gCuccoItemNameCHITex,
+    gZeldasLetterItemNameCHITex,
+    gKeatonMaskItemNameCHITex,
+    gSkullMaskItemNameCHITex,
+    gSpookyMaskItemNameCHITex,
+    gBunnyHoodItemNameCHITex,
+    gGoronMaskItemNameCHITex,
+    gZoraMaskItemNameCHITex,
+    gGerudoMaskItemNameCHITex,
+    gMaskofTruthItemNameCHITex,
+    gSOLDOUTItemNameCHITex,
+    gPocketEggItemNameCHITex,
+    gPocketCuccoItemNameCHITex,
+    gCojiroItemNameCHITex,
+    gOddMushroomItemNameCHITex,
+    gOddPotionItemNameCHITex,
+    gPoachersSawItemNameCHITex,
+    gBrokenGoronsSwordItemNameCHITex,
+    gPrescriptionItemNameCHITex,
+    gEyeBallFrogItemNameCHITex,
+    gEyeDropsItemNameCHITex,
+    gClaimCheckItemNameCHITex,
+    gUnusedWindMedallionItemName1JPNTex,
+    gUnusedFireMedallionItemName1JPNTex,
+    gUnusedIceMedallionItemName1JPNTex,
+    gKokiriSwordItemNameCHITex,
+    gMasterSwordItemNameCHITex,
+    gGiantsKnifeItemNameCHITex,
+    gDekuShieldItemNameCHITex,
+    gHylianShieldItemNameCHITex,
+    gMirrorShieldItemNameCHITex,
+    gKokiriTunicItemNameCHITex,
+    gGoronTunicItemNameCHITex,
+    gZoraTunicItemNameCHITex,
+    gKokiriBootsItemNameCHITex,
+    gIronBootsItemNameCHITex,
+    gHoverBootsItemNameCHITex,
+    gBulletBag30ItemNameCHITex,
+    gBulletBag40ItemNameCHITex,
+    gBulletBag50ItemNameCHITex,
+    gQuiver30ItemNameCHITex,
+    gQuiver40ItemNameCHITex,
+    gQuiver50ItemNameCHITex,
+    gBombBag20ItemNameCHITex,
+    gBombBag30ItemNameCHITex,
+    gBombBag40ItemNameCHITex,
+    gGoronsBraceletItemNameCHITex,
+    gSilverGauntletsItemNameCHITex,
+    gGoldenGauntletsItemNameCHITex,
+    gSilverScaleItemNameCHITex,
+    gGoldenScaleItemNameCHITex,
+    gBrokenGiantsKnifeItemNameCHITex,
+    gUnusedBossKeyItemName1JPNTex,
+    gUnusedBossKeyItemName2JPNTex,
+    gUnusedBossKeyItemName3JPNTex,
+    gUnusedBossKeyItemName4JPNTex,
+    gMinuetOfForestItemNameCHITex,
+    gBoleroOfFireItemNameCHITex,
+    gSerenadeOfWaterItemNameCHITex,
+    gRequiemOfSpiritItemNameCHITex,
+    gNocturneOfShadowItemNameCHITex,
+    gPreludeOfLightItemNameCHITex,
+    gZeldasLullabyItemNameCHITex,
+    gEponasSongItemNameCHITex,
+    gSariasSongItemNameCHITex,
+    gSunsSongItemNameCHITex,
+    gSongOfTimeItemNameCHITex,
+    gSongOfStormsItemNameCHITex,
+    gForestMedallionItemNameCHITex,
+    gFireMedallionItemNameCHITex,
+    gWaterMedallionItemNameCHITex,
+    gSpiritMedallionItemNameCHITex,
+    gShadowMedallionItemNameCHITex,
+    gLightMedallionItemNameCHITex,
+    gKokiriEmeraldItemNameCHITex,
+    gGoronsRubyItemNameCHITex,
+    gZorasSapphireItemNameCHITex,
+    gStoneofAgonyItemNameCHITex,
+    gGerudosCardItemNameCHITex,
+    gGoldSkulltulaItemNameCHITex,
+    gPieceOfHeartItemNameCHITex,
+    gUnusedPieceOfHeartItemName1JPNTex,
+    gUnusedBigKeyItemNameCHITex,
+    gCompassItemNameCHITex,
+    gDungeonMapItemNameCHITex,
+    gUnusedBossKeyItemName5JPNTex,
+    gUnusedBossKeyItemName6JPNTex,
+    gUnusedBossKeyItemName7JPNTex,
+    gBiggoronsSwordItemNameCHITex,
 };
 
 // SOH [NTSC] - Fit in JPN textures, resulting in changes to offsets when indexed
@@ -802,6 +961,19 @@ static void* mapNameTextures[] = {
     /*  9 */ gLostWoodsPointNameJPNTex,
     /* 10 */ gKokiriForestPointNameJPNTex,
     /* 11 */ gZorasDomainPointNameJPNTex,
+    // LANGUAGE_CHI
+    /*  0 */ gHauntedWastelandPointNameCHITex,
+    /*  1 */ gGerudosFortressPointNameCHITex,
+    /*  2 */ gGerudoValleyPointNameCHITex,
+    /*  3 */ gHyliaLakesidePointNameCHITex,
+    /*  4 */ gLonLonRanchPointNameCHITex,
+    /*  5 */ gMarketPointNameCHITex,
+    /*  6 */ gHyruleFieldPointNameCHITex,
+    /*  7 */ gDeathMountainPointNameCHITex,
+    /*  8 */ gKakarikoVillagePointNameCHITex,
+    /*  9 */ gLostWoodsPointNameCHITex,
+    /* 10 */ gKokiriForestPointNameCHITex,
+    /* 11 */ gZorasDomainPointNameCHITex,
     // LANGUAGE_ENG
     /*  0 */ gHyruleFieldPositionNameENGTex,
     /*  1 */ gKakarikoVillagePositionNameENGTex,
@@ -894,6 +1066,29 @@ static void* mapNameTextures[] = {
     /* 19 */ gLonLonRanchPositionNameJPNTex,
     /* 20 */ gQuestionMarkPositionNameJPNTex,
     /* 21 */ gGanonsCastlePositionNameJPNTex,
+    // LANGUAGE_CHI
+    /*  0 */ gHyruleFieldPositionNameCHITex,
+    /*  1 */ gKakarikoVillagePositionNameCHITex,
+    /*  2 */ gGraveyardPositionNameCHITex,
+    /*  3 */ gZorasRiverPositionNameCHITex,
+    /*  4 */ gKokiriForestPositionNameCHITex,
+    /*  5 */ gSacredForestMeadowPositionNameCHITex,
+    /*  6 */ gLakeHyliaPositionNameCHITex,
+    /*  7 */ gZorasDomainPositionNameCHITex,
+    /*  8 */ gZorasFountainPositionNameCHITex,
+    /*  9 */ gGerudoValleyPositionNameCHITex,
+    /* 10 */ gLostWoodsPositionNameCHITex,
+    /* 11 */ gDesertColossusPositionNameCHITex,
+    /* 12 */ gGerudosFortressPositionNameCHITex,
+    /* 13 */ gHauntedWastelandPositionNameCHITex,
+    /* 14 */ gMarketPositionNameCHITex,
+    /* 15 */ gHyruleCastlePositionNameCHITex,
+    /* 16 */ gDeathMountainTrailPositionNameCHITex,
+    /* 17 */ gDeathMountainCraterPositionNameCHITex,
+    /* 18 */ gGoronCityPositionNameCHITex,
+    /* 19 */ gLonLonRanchPositionNameCHITex,
+    /* 20 */ gQuestionMarkPositionNameCHITex,
+    /* 21 */ gGanonsCastlePositionNameCHITex,
 };
 
 s16 D_8082AAEC[] = {
@@ -1116,6 +1311,7 @@ static void* sSavePromptTexs[] = {
     gPauseSavePromptGERTex,
     gPauseSavePromptFRATex,
     gPauseSavePromptJPNTex,
+    gPauseSavePromptCHITex, // LANGUAGE_CHI
 };
 
 static void* sSaveConfirmationTexs[] = {
@@ -1123,6 +1319,7 @@ static void* sSaveConfirmationTexs[] = {
     gPauseSaveConfirmationGERTex,
     gPauseSaveConfirmationFRATex,
     gPauseSaveConfirmationJPNTex,
+    gPauseSaveConfirmationCHITex, // LANGUAGE_CHI
 };
 
 static void* sContinuePromptTexs[] = {
@@ -1130,6 +1327,7 @@ static void* sContinuePromptTexs[] = {
     gContinuePlayingGERTex,
     gContinuePlayingFRATex,
     gContinuePlayingJPNTex,
+    gContinuePlayingCHITex, // LANGUAGE_CHI
 };
 
 static void* sPromptChoiceTexs[][2] = {
@@ -1137,6 +1335,7 @@ static void* sPromptChoiceTexs[][2] = {
     { gPauseYesGERTex, gPauseNoGERTex },
     { gPauseYesFRATex, gPauseNoFRATex },
     { gPauseYesJPNTex, gPauseNoJPNTex },
+    { gPauseYesCHITex, gPauseNoCHITex }, // LANGUAGE_CHI
 };
 
 static u8 sButtonStatusSave[ARRAY_COUNT(gSaveContext.buttonStatus)];
@@ -1912,39 +2111,42 @@ void KaleidoScope_DrawInfoPanel(PlayState* play) {
         cRightButtonColor = CVarGetColor24(CVAR_COSMETIC("HUD.CRightButton.Value"), cRightButtonColor);
     }
 
-    static const void* sToEquipTextures[4] = {
+    static const void* sToEquipTextures[5] = {
         gPauseToEquipENGTex,
         gPauseToEquipGERTex,
         gPauseToEquipFRATex,
         gPauseToEquipJPNTex,
+        gPauseToEquipCHITex, // CHI
     };
-    static const void* sToDecideTextures[4] = {
+    static const void* sToDecideTextures[5] = {
         gPauseToDecideENGTex,
         gPauseToDecideGERTex,
         gPauseToDecideFRATex,
         gPauseToDecideJPNTex,
+        gPauseToDecideCHITex, // CHI
     };
-    static const void* sPlayMelodyTextures[4] = {
+    static const void* sPlayMelodyTextures[5] = {
         gPauseToPlayMelodyENGTex,
         gPauseToPlayMelodyGERTex,
         gPauseToPlayMelodyFRATex,
         gPauseToPlayMelodyJPNTex,
+        gPauseToPlayMelodyCHITex, // CHI
     };
-    static const void* D_8082AD78[][4] = {
-        { gPauseToEquipmentENGTex, gPauseToEquipmentGERTex, gPauseToEquipmentFRATex, gPauseToEquipmentJPNTex },
-        { gPauseToSelectItemENGTex, gPauseToSelectItemGERTex, gPauseToSelectItemFRATex, gPauseToSelectItemJPNTex },
-        { gPauseToMapENGTex, gPauseToMapGERTex, gPauseToMapFRATex, gPauseToMapJPNTex },
-        { gPauseToQuestStatusENGTex, gPauseToQuestStatusGERTex, gPauseToQuestStatusFRATex, gPauseToQuestStatusJPNTex },
+    static const void* D_8082AD78[][5] = {
+        { gPauseToEquipmentENGTex, gPauseToEquipmentGERTex, gPauseToEquipmentFRATex, gPauseToEquipmentJPNTex, gPauseToEquipmentCHITex },
+        { gPauseToSelectItemENGTex, gPauseToSelectItemGERTex, gPauseToSelectItemFRATex, gPauseToSelectItemJPNTex, gPauseToSelectItemCHITex },
+        { gPauseToMapENGTex, gPauseToMapGERTex, gPauseToMapFRATex, gPauseToMapJPNTex, gPauseToMapCHITex },
+        { gPauseToQuestStatusENGTex, gPauseToQuestStatusGERTex, gPauseToQuestStatusFRATex, gPauseToQuestStatusJPNTex, gPauseToQuestStatusCHITex },
     };
-    static void* D_8082ADA8[][4] = {
-        { gPauseToMapENGTex, gPauseToMapGERTex, gPauseToMapFRATex, gPauseToMapJPNTex },
-        { gPauseToQuestStatusENGTex, gPauseToQuestStatusGERTex, gPauseToQuestStatusFRATex, gPauseToQuestStatusJPNTex },
-        { gPauseToEquipmentENGTex, gPauseToEquipmentGERTex, gPauseToEquipmentFRATex, gPauseToEquipmentJPNTex },
-        { gPauseToSelectItemENGTex, gPauseToSelectItemGERTex, gPauseToSelectItemFRATex, gPauseToSelectItemJPNTex },
+    static void* D_8082ADA8[][5] = {
+        { gPauseToMapENGTex, gPauseToMapGERTex, gPauseToMapFRATex, gPauseToMapJPNTex, gPauseToMapCHITex },
+        { gPauseToQuestStatusENGTex, gPauseToQuestStatusGERTex, gPauseToQuestStatusFRATex, gPauseToQuestStatusJPNTex, gPauseToQuestStatusCHITex },
+        { gPauseToEquipmentENGTex, gPauseToEquipmentGERTex, gPauseToEquipmentFRATex, gPauseToEquipmentJPNTex, gPauseToEquipmentCHITex },
+        { gPauseToSelectItemENGTex, gPauseToSelectItemGERTex, gPauseToSelectItemFRATex, gPauseToSelectItemJPNTex, gPauseToSelectItemCHITex },
     };
-    static u16 D_8082ADD8[4] = { 56, 88, 80, 56 };
-    static u16 D_8082ADE0[4] = { 64, 88, 72, 48 };
-    static u16 D_8082ADE8[4] = { 80, 104, 112, 80 };
+    static u16 D_8082ADD8[5] = { 56, 88, 80, 56, 56 }; // CHI uses ENG width
+    static u16 D_8082ADE0[5] = { 64, 88, 72, 48, 64 }; // CHI uses ENG width
+    static u16 D_8082ADE8[5] = { 80, 104, 112, 80, 80 }; // CHI uses ENG width
     static s16 D_8082ADF0[][4] = {
         { 180, 210, 255, 220 },
         { 100, 100, 150, 220 },
@@ -1972,7 +2174,7 @@ void KaleidoScope_DrawInfoPanel(PlayState* play) {
 
     // #region SOH [NTSC] - register access assumes 3 languages, make jpn use same as eng
     s32 languageOffset = gSaveContext.language;
-    if (languageOffset == LANGUAGE_JPN) {
+    if (languageOffset == LANGUAGE_JPN || languageOffset == LANGUAGE_CHI) {
         languageOffset = LANGUAGE_ENG;
     }
     // #endregion
@@ -2310,7 +2512,7 @@ void KaleidoScope_DrawInfoPanel(PlayState* play) {
                     D_8082ADD8[gSaveContext.language] << 5;
 
                 s16 PosX; // General Pos of C button icon
-                if (gSaveContext.language == LANGUAGE_ENG || gSaveContext.language == LANGUAGE_JPN) {
+                if (gSaveContext.language == LANGUAGE_ENG || gSaveContext.language == LANGUAGE_JPN || gSaveContext.language == LANGUAGE_CHI) {
                     PosX = 112;
                 } else if (gSaveContext.language == LANGUAGE_GER) {
                     PosX = 175;
@@ -2473,6 +2675,9 @@ void KaleidoScope_UpdateNamePanel(PlayState* play) {
                 if (gSaveContext.language >= LANGUAGE_JPN) {
                     sp2A += 12;
                 }
+                if (gSaveContext.language >= LANGUAGE_CHI) {
+                    sp2A += 12;
+                }
 
                 const char* textureName = mapNameTextures[sp2A];
                 memcpy(pauseCtx->nameSegment, textureName, strlen(textureName) + 1);
@@ -2490,6 +2695,9 @@ void KaleidoScope_UpdateNamePanel(PlayState* play) {
                     sp2A += 123;
                 }
                 if (gSaveContext.language >= LANGUAGE_JPN) {
+                    sp2A += 123;
+                }
+                if (gSaveContext.language >= LANGUAGE_CHI) {
                     sp2A += 123;
                 }
 
@@ -3469,9 +3677,15 @@ void KaleidoScope_DrawGameOver(PlayState* play) {
 
     VREG(89) -= 2;
 
+    if (gSaveContext.language == LANGUAGE_CHI) {
+    gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP1CHITex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
+                      G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
+                      G_TX_NOLOD);
+    } else {
     gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP1Tex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
                       G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
                       G_TX_NOLOD);
+    }
 
     gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverMaskTex, 256, 1, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
                       G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, 5, G_TX_NOLOD, G_TX_NOLOD);
@@ -3481,16 +3695,28 @@ void KaleidoScope_DrawGameOver(PlayState* play) {
     gSPTextureRectangle(POLY_OPA_DISP++, VREG(87) << 2, VREG(88) << 2, (VREG(87) + 64) << 2, (VREG(88) + 32) << 2,
                         G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
 
+    if (gSaveContext.language == LANGUAGE_CHI) {
+    gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP2CHITex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
+                      G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
+                      G_TX_NOLOD);
+    } else {
     gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP2Tex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
                       G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
                       G_TX_NOLOD);
+    }
 
     gSPTextureRectangle(POLY_OPA_DISP++, (VREG(87) + 64) << 2, VREG(88) << 2, (VREG(87) + 128) << 2,
                         (VREG(88) + 32) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
 
+    if (gSaveContext.language == LANGUAGE_CHI) {
+    gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP3CHITex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
+                      G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
+                      G_TX_NOLOD);
+    } else {
     gDPLoadMultiBlock(POLY_OPA_DISP++, gGameOverP3Tex, 0, 0, G_IM_FMT_IA, G_IM_SIZ_8b, 64, 32, 0,
                       G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD,
                       G_TX_NOLOD);
+    }
     gSPTextureRectangle(POLY_OPA_DISP++, (VREG(87) + 128) << 2, VREG(88) << 2, (VREG(87) + 192) << 2,
                         (VREG(88) + 32) << 2, G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
 
@@ -3984,7 +4210,7 @@ void KaleidoScope_Update(PlayState* play) {
 
             if (((void)0, gSaveContext.worldMapArea) < 22) {
                 // SOH [NTSC] - change offsets to fit jpn textures
-                const uint8_t offsets[] = { 48, 70, 92, 114 };
+                const uint8_t offsets[] = { 60, 82, 104, 126, 148 }; // 5 langs × 12 PointNames
                 const char* textureName = mapNameTextures[offsets[gSaveContext.language] + gSaveContext.worldMapArea];
                 memcpy(pauseCtx->nameSegment + 0x400, textureName, strlen(textureName) + 1);
             }

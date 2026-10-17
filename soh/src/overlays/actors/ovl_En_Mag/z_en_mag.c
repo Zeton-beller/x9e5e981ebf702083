@@ -415,7 +415,7 @@ bool EnMag_ShouldDrawNoController(Font* font, Gfx** gfxP, bool isActualText) {
         return true;
     }
     Gfx* gfx = *gfxP;
-    u8 language = (gSaveContext.language == LANGUAGE_JPN) ? LANGUAGE_ENG : gSaveContext.language;
+    u8 language = (gSaveContext.language == LANGUAGE_JPN || gSaveContext.language == LANGUAGE_CHI) ? LANGUAGE_ENG : gSaveContext.language;
     s32 length = strlen(noControllerMsg[language]);
     u16 rectLeft = VREG(19) + ((length - 13) * -3);
     u16 rectTop = YREG(10) + 171;
@@ -450,7 +450,7 @@ bool EnMag_ShouldDrawPressStart(Font* font, Gfx** gfxP, bool isActualText) {
         return true;
     }
     Gfx* gfx = *gfxP;
-    u8 language = (gSaveContext.language == LANGUAGE_JPN) ? LANGUAGE_ENG : gSaveContext.language;
+    u8 language = (gSaveContext.language == LANGUAGE_JPN || gSaveContext.language == LANGUAGE_CHI) ? LANGUAGE_ENG : gSaveContext.language;
     s32 length = strlen(pressStartMsg[language]);
     u16 rectLeft = YREG(7) + ((length - 11) * -3);
     u16 rectTop = YREG(10) + 171;
@@ -611,7 +611,7 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
         }
     }
 
-    if (gSaveContext.language == LANGUAGE_JPN) {
+    if (gSaveContext.language == LANGUAGE_JPN || gSaveContext.language == LANGUAGE_CHI) {
         this->unk_E30C++;
         gDPPipeSync(gfx++);
         gDPSetCycleType(gfx++, G_CYC_2CYCLE);
@@ -631,7 +631,8 @@ void EnMag_DrawInner(Actor* thisx, PlayState* play, Gfx** gfxP) {
             gDPSetEnvColor(gfx++, ZREG(34), 100 + ZREG(35), 255 + ZREG(36), 255);
         }
         if ((s16)this->subAlpha != 0) {
-            gDPLoadTextureBlock(gfx++, gTitleTitleJPNTex, G_IM_FMT_I, G_IM_SIZ_8b, 128, 16, 0,
+            void* titleTex = (gSaveContext.language == LANGUAGE_CHI) ? gTitleTitleCHITex : gTitleTitleJPNTex;
+            gDPLoadTextureBlock(gfx++, titleTex, G_IM_FMT_I, G_IM_SIZ_8b, 128, 16, 0,
                                 G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOMIRROR | G_TX_WRAP,
                                 G_TX_NOMASK, G_TX_NOLOD);
             gDPLoadMultiBlock(gfx++, gTitleFlameEffectTex, 0x100, 1, G_IM_FMT_I, G_IM_SIZ_8b, 32, 32, 0,

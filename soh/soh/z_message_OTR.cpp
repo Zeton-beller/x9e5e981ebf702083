@@ -12,6 +12,8 @@ extern "C" MessageTableEntry* sGerMessageEntryTablePtr;
 extern "C" MessageTableEntry* sFraMessageEntryTablePtr;
 extern "C" MessageTableEntry* sJpnMessageEntryTablePtr;
 extern "C" MessageTableEntry* sStaffMessageEntryTablePtr;
+extern "C" MessageTableEntry* sChiMessageEntryTablePtr;
+extern "C" void OTRMessage_InitChinese();
 // extern "C" MessageTableEntry* _message_0xFFFC_nes;
 
 static void SetMessageEntry(MessageTableEntry& entry, const SOH::MessageEntry& msgEntry) {
@@ -109,4 +111,7 @@ extern "C" void OTRMessage_Init() {
         // Assert staff credits start at the first credits ID
         assert(sStaffMessageEntryTablePtr[0].textId == 0x0500);
     }
+
+    // SOH [Chinese] - Load Chinese message table from embedded iQue data
+    OTRMessage_InitChinese();
 }
