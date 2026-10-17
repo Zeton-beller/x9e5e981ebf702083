@@ -2122,13 +2122,16 @@ void ApplySohMenuLocalization(std::unordered_map<std::string, MainMenuEntry>& me
                         }
                     }
 
-                    if (widget.type == WIDGET_COMBOBOX || widget.type == WIDGET_CVAR_COMBOBOX) {
+                    if (widget.type == WIDGET_COMBOBOX || widget.type == WIDGET_CVAR_COMBOBOX ||
+                        widget.type == WIDGET_AUDIO_BACKEND || widget.type == WIDGET_VIDEO_BACKEND) {
                         auto comboOpt = std::static_pointer_cast<UIWidgets::ComboboxOptions>(widget.options);
                         if (comboOpt) {
-                            for (auto& opt : comboOpt->comboOptions) {
-                                auto itCombo = sComboOptionMap.find(opt);
-                                if (itCombo != sComboOptionMap.end()) {
-                                    opt = itCombo->second;
+                            for (auto& pair : comboOpt->comboMap) {
+                                if (pair.second) {
+                                    auto itCombo = sComboOptionMap.find(pair.second);
+                                    if (itCombo != sComboOptionMap.end()) {
+                                        pair.second = itCombo->second.c_str();
+                                    }
                                 }
                             }
                         }
