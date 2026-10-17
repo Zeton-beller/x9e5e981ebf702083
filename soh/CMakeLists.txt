@@ -150,6 +150,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set_source_files_properties(soh/Enhancements/custom-message/CustomMessageManager.h PROPERTIES COMPILE_FLAGS "/utf-8")
 endif()
 
+option(DISABLE_MENU_LOCALIZATION "Disable in-game menu translation" OFF)
+if (DISABLE_MENU_LOCALIZATION)
+    add_compile_definitions(DISABLE_MENU_LOCALIZATION)
+endif()
+
 # handle speechsynthesizer removals
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
     list(FILTER soh__ EXCLUDE REGEX "soh/Enhancements/speechsynthesizer/Darwin")

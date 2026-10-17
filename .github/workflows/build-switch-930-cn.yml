@@ -1,0 +1,94 @@
+name: Build SoH Switch 9.3.0 CN Dual-Edition (双版本)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - switch-9.3.0-cn
+
+jobs:
+  build-switch-dual:
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20251117
+    steps:
+      - name: Fix dubious ownership error
+        run: git config --global --add safe.directory '*'
+
+      - name: Install build tools and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt) zip
+          sudo apt-get remove -y cmake || true
+          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
+          pip install --break-system-packages cryptography
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Apply patches for Switch Chinese font support
+        run: python3 scripts/apply_patches.py
+
+      - name: Build Full Chinese Menu Version (版本B: 全汉化版)
+        run: |
+          echo "=== 正在构建版本 B: 全汉化版 (游戏文本汉化 + 配置界面全汉化) ==="
+          cmake -H. -Bbuild-full -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1 \
+            -DDISABLE_MENU_LOCALIZATION=OFF
+          cmake --build build-full --target soh_nro --config Release -j$(nproc)
+          cp build-full/soh/*.nro soh_9.3.0_cn_full_menu.nro
+          cp soh_9.3.0_cn_full_menu.nro soh.nro
+          echo "版本 B 构建完成: soh_9.3.0_cn_full_menu.nro"
+
+      - name: Build Original Menu Version (版本A: 仅游戏剧情汉化，配置菜单纯英文)
+        run: |
+          echo "=== 正在构建版本 A: 仅游戏剧情汉化版 (配置菜单纯英文) ==="
+          cmake -H. -Bbuild-orig -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1 \
+            -DDISABLE_MENU_LOCALIZATION=ON
+          cmake --build build-orig --target soh_nro --config Release -j$(nproc)
+          cp build-orig/soh/*.nro soh_9.3.0_cn_orig_menu.nro
+          echo "版本 A 构建完成: soh_9.3.0_cn_orig_menu.nro"
+
+      - name: Verify Chinese symbols in NROs
+        run: |
+          echo "--- 校验版本 B (全汉化版) ---"
+          strings soh_9.3.0_cn_full_menu.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese not found"
+          strings soh_9.3.0_cn_full_menu.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr not found"
+          strings soh_9.3.0_cn_full_menu.nro | grep "系统设置" || echo "Warning: Chinese menu strings not found in full menu"
+
+          echo "--- 校验版本 A (原版英文菜单版) ---"
+          strings soh_9.3.0_cn_orig_menu.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese not found"
+          strings soh_9.3.0_cn_orig_menu.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr not found"
+
+      - name: Package Switch Chinese Dual-Edition Release
+        run: |
+          mkdir -p switch/soh
+          # 默认放置全汉化版作为主执行文件
+          cp soh_9.3.0_cn_full_menu.nro switch/soh/soh.nro
+          cp soh_9.3.0_cn_full_menu.nro switch/soh/soh_9.3.0_cn_full_menu.nro
+          cp soh_9.3.0_cn_orig_menu.nro switch/soh/soh_9.3.0_cn_orig_menu.nro
+          cp soh.o2r switch/soh/soh.o2r
+          cp README.md switch/soh/readme.txt
+          zip -r soh-switch-9.3.0-cn-dual-edition.zip switch/
+
+      - name: Upload Switch Dual-Edition Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh-switch-9.3.0-cn-dual-edition
+          path: |
+            soh.nro
+            soh_9.3.0_cn_full_menu.nro
+            soh_9.3.0_cn_orig_menu.nro
+            soh.o2r
+            soh-switch-9.3.0-cn-dual-edition.zip
