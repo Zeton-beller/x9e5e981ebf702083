@@ -1,5 +1,6 @@
 
 #include "Notification.h"
+#include <cmath>
 #include <libultraship/libultraship.h>
 #include "soh/OTRGlobals.h"
 
@@ -46,9 +47,9 @@ void Window::Draw() {
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 4.0f);
 
-    for (int index = 0; index < notifications.size(); ++index) {
+    for (size_t index = 0; index < notifications.size(); ++index) {
         auto& notification = notifications[index];
-        int inverseIndex = -ABS(index - (notifications.size() - 1));
+        int inverseIndex = -std::abs(static_cast<int>(index) - (static_cast<int>(notifications.size()) - 1));
 
         ImGui::SetNextWindowViewport(vp->ID);
         if (notification.remainingTime < 4.0f) {
@@ -111,7 +112,7 @@ void Window::Draw() {
 }
 
 void Window::UpdateElement() {
-    for (int index = 0; index < notifications.size(); ++index) {
+    for (int index = 0; index < static_cast<int>(notifications.size()); ++index) {
         auto& notification = notifications[index];
 
         // decrement remainingTime

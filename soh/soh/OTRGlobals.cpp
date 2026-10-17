@@ -57,7 +57,7 @@
 #endif
 
 #ifdef __SWITCH__
-#include <switch.h>
+#include "SwitchFontHelper.h"
 #include <ship/port/switch/SwitchImpl.h>
 #elif defined(__WIIU__)
 #include <ship/port/wiiu/WiiUImpl.h>
@@ -973,21 +973,14 @@ void OTRGlobals::ScaleImGui() {
 static void MergeChineseGlyphs(ImFontAtlas* fonts, float size) {
     bool mergedChinese = false;
 #ifdef __SWITCH__
-    static bool sPlInited = false;
-    static PlFontData sPlFontCn;
-    static bool sHasPlFontCn = false;
-    if (!sPlInited) {
-        plInitialize(PlServiceType_User);
-        sHasPlFontCn = R_SUCCEEDED(plGetSharedFontByType(&sPlFontCn, PlSharedFontType_ChineseSimplified));
-        sPlInited = true;
-    }
-
-    if (sHasPlFontCn && sPlFontCn.address != nullptr && sPlFontCn.size > 0) {
+    void* plAddr = nullptr;
+    size_t plSize = 0;
+    if (Switch_GetChineseSharedFont(&plAddr, &plSize) && plAddr != nullptr && plSize > 0) {
         ImFontConfig cnConfig;
         cnConfig.FontDataOwnedByAtlas = false;
         cnConfig.MergeMode = true;
         strcpy(cnConfig.Name, "Nintendo ChineseSimplified");
-        fonts->AddFontFromMemoryTTF(sPlFontCn.address, sPlFontCn.size, size, &cnConfig,
+        fonts->AddFontFromMemoryTTF(plAddr, plSize, size, &cnConfig,
                                     fonts->GetGlyphRangesChineseFull());
         mergedChinese = true;
     }
