@@ -1,4 +1,4 @@
-name: Build SoH Switch 9.3.0 CN Dual-Edition (双版本)
+name: "Build SoH Switch 9.3.0 CN Dual-Edition"
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
       - name: Apply patches for Switch Chinese font support
         run: python3 scripts/apply_patches.py
 
-      - name: Build Full Chinese Menu Version (版本B: 全汉化版)
+      - name: "Build Full Chinese Menu Version (Edition B: Full Menu)"
         run: |
           echo "=== 正在构建版本 B: 全汉化版 (游戏文本汉化 + 配置界面全汉化) ==="
           cmake -H. -Bbuild-full -GNinja \
@@ -47,7 +47,7 @@ jobs:
           cp soh_9.3.0_cn_full_menu.nro soh.nro
           echo "版本 B 构建完成: soh_9.3.0_cn_full_menu.nro"
 
-      - name: Build Original Menu Version (版本A: 仅游戏剧情汉化，配置菜单纯英文)
+      - name: "Build Original Menu Version (Edition A: Original Menu)"
         run: |
           echo "=== 正在构建版本 A: 仅游戏剧情汉化版 (配置菜单纯英文) ==="
           cmake -H. -Bbuild-orig -GNinja \
