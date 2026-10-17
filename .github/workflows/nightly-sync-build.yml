@@ -246,6 +246,9 @@ jobs:
           TAG_NAME="nightly-${SHORT_SHA}"
           RELEASE_TITLE="SoH Switch Nightly (${SHORT_SHA})"
 
+          # 防御性校验待发布文件
+          ls -lh soh-switch-nightly-cn.zip soh.nro soh.o2r
+
           # 组装纯净的 Release Notes：仅展示官方主干更新
           cat << 'EOF' > release_notes.md
           ### 🌟 本次合并的官方主干更新 (Upstream Updates)
@@ -266,24 +269,27 @@ jobs:
           echo "=== 准备发布的 Release 说明 ==="
           cat release_notes.md
 
-          # 创建或更新 Release
-          gh release delete "${TAG_NAME}" -y 2>/dev/null || true
+          # 创建或更新 Release（增加 --cleanup-tag 与 --target 锁定 commit）
+          gh release delete "${TAG_NAME}" --cleanup-tag -y 2>/dev/null || true
           gh release create "${TAG_NAME}" \
             soh-switch-nightly-cn.zip \
             soh.nro \
             soh.o2r \
             --title "${RELEASE_TITLE}" \
             --notes-file release_notes.md \
+            --target "${{ github.sha }}" \
             --prerelease
 
           # 同步更新永久最新滚动 Release (TAG: latest)
-          gh release delete "latest" -y 2>/dev/null || true
+          gh release delete "latest" --cleanup-tag -y 2>/dev/null || true
           gh release create "latest" \
             soh-switch-nightly-cn.zip \
             soh.nro \
             soh.o2r \
             --title "SoH Switch Nightly 最新直链下载" \
             --notes-file release_notes.md \
+            --target "${{ github.sha }}" \
             --prerelease || echo "Rolling release update done"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
