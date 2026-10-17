@@ -33,6 +33,19 @@ jobs:
       - name: Apply patches for Switch Chinese font support
         run: python3 scripts/apply_patches.py
 
+      - name: "Synchronously Build and Generate soh.o2r (同步实时生成最新 soh.o2r 资源包)"
+        run: |
+          echo "=== 正在构建 GenerateSohOtr 工具并实时打包最新 soh.o2r ==="
+          cmake --no-warn-unused-cli -H. -Bbuild-tools -GNinja \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DSOH_TOOLS_ONLY=ON
+          cmake --build build-tools --config Release --target GenerateSohOtr -j$(nproc)
+          if [ -f build-tools/soh/soh.o2r ]; then
+            cp -v build-tools/soh/soh.o2r ./soh.o2r
+          fi
+          echo "soh.o2r 校验:"
+          ls -lh soh.o2r
+
       - name: "Build Full Chinese Menu Version (Edition B: Full Menu)"
         run: |
           echo "=== 正在构建版本 B: 全汉化版 (游戏剧情汉化 + 配置界面全汉化) ==="
