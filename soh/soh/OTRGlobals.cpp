@@ -69,7 +69,6 @@
 #endif
 
 #ifdef __SWITCH__
-#include "SwitchFontHelper.h"
 #include <ship/port/switch/SwitchImpl.h>
 #elif defined(__WIIU__)
 #include <ship/port/wiiu/WiiUImpl.h>
@@ -1015,43 +1014,6 @@ void OTRGlobals::ScaleImGui() {
     previousImGuiScaleIndex = imGuiScaleIndex;
 }
 
-static void MergeChineseGlyphs(ImFontAtlas* fonts, float size) {
-    bool mergedChinese = false;
-#ifdef __SWITCH__
-    void* plAddr = nullptr;
-    size_t plSize = 0;
-    if (Switch_GetChineseSharedFont(&plAddr, &plSize) && plAddr != nullptr && plSize > 0) {
-        ImFontConfig cnConfig;
-        cnConfig.FontDataOwnedByAtlas = false;
-        cnConfig.MergeMode = true;
-        strcpy(cnConfig.Name, "Nintendo ChineseSimplified");
-        fonts->AddFontFromMemoryTTF(plAddr, plSize, size, &cnConfig,
-                                    fonts->GetGlyphRangesChineseFull());
-        mergedChinese = true;
-    }
-#endif
-    if (!mergedChinese) {
-        try {
-            auto initDataFallback = std::make_shared<Ship::ResourceInitData>();
-            initDataFallback->Format = RESOURCE_FORMAT_BINARY;
-            initDataFallback->Type = static_cast<uint32_t>(RESOURCE_TYPE_FONT);
-            initDataFallback->ResourceVersion = 0;
-            initDataFallback->Path = "fonts/NotoSansJP-Regular.ttf";
-            auto fallbackFont = std::static_pointer_cast<Ship::Font>(
-                Ship::Context::GetRawInstance()->GetResourceManager()->LoadResource("fonts/NotoSansJP-Regular.ttf", false, initDataFallback));
-            if (fallbackFont && fallbackFont->Data && fallbackFont->DataSize > 0) {
-                ImFontConfig fallbackConfig;
-                fallbackConfig.FontDataOwnedByAtlas = false;
-                fallbackConfig.MergeMode = true;
-                strcpy(fallbackConfig.Name, "NotoSansCJK-Fallback");
-                fonts->AddFontFromMemoryTTF(fallbackFont->Data, fallbackFont->DataSize, size, &fallbackConfig,
-                                            fonts->GetGlyphRangesChineseFull());
-            }
-        } catch (...) {
-        }
-    }
-}
-
 bool OTRGlobals::HasMasterQuest() {
     return hasMasterQuest;
 }
@@ -1979,10 +1941,6 @@ ImFont* OTRGlobals::CreateFontWithSize(float size, std::string fontPath, bool is
     iconsConfig.GlyphMinAdvanceX = iconFontSize;
     mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
                                                           &iconsConfig, sIconsRanges);
-    bool isStandardFont = (fontPath.find("Montserrat") != std::string::npos) || (fontPath == "");
-    if (isStandardFont) {
-        MergeChineseGlyphs(mImGuiIo->Fonts, size);
-    }
     return font;
 }
 

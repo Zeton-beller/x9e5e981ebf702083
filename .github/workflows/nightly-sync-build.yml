@@ -1,0 +1,198 @@
+name: "Nightly Sync & Auto-Build Switch (CN Story)"
+
+on:
+  schedule:
+    # 每日北京时间 11:00 (UTC 03:00) 自动巡检
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      force_build:
+        description: '强制执行全量构建 (即使上游无新提交)'
+        required: false
+        type: boolean
+        default: false
+      create_release:
+        description: '发布到 GitHub Releases'
+        required: false
+        type: boolean
+        default: true
+  push:
+    branches:
+      - switch-9.3.0-cn
+
+jobs:
+  check-upstream:
+    name: "Check Upstream Commits (检查官方上游主干)"
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check.outputs.should_build }}
+      upstream_sha: ${{ steps.check.outputs.upstream_sha }}
+      sync_needed: ${{ steps.check.outputs.sync_needed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check latest commit on HarbourMasters/Shipwright develop
+        id: check
+        run: |
+          LATEST_UPSTREAM=$(git ls-remote https://github.com/HarbourMasters/Shipwright.git refs/heads/develop | awk '{print $1}')
+          echo "上游官方 develop 最新 Commit: $LATEST_UPSTREAM"
+          
+          CURRENT_SYNC=""
+          if [ -f .upstream_sync_sha ]; then
+            CURRENT_SYNC=$(cat .upstream_sync_sha | tr -d '[:space:]')
+          fi
+          echo "本仓库记录的已同步 Commit: $CURRENT_SYNC"
+          
+          FORCE_BUILD="${{ github.event.inputs.force_build }}"
+          EVENT_NAME="${{ github.event_name }}"
+          
+          if [ "$FORCE_BUILD" = "true" ] || [ "$EVENT_NAME" = "push" ]; then
+            echo "触发条件: 手动强制构建或代码推送"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+            echo "upstream_sha=$LATEST_UPSTREAM" >> $GITHUB_OUTPUT
+            if [ "$LATEST_UPSTREAM" != "$CURRENT_SYNC" ]; then
+              echo "sync_needed=true" >> $GITHUB_OUTPUT
+            else
+              echo "sync_needed=false" >> $GITHUB_OUTPUT
+            fi
+          elif [ "$LATEST_UPSTREAM" != "$CURRENT_SYNC" ]; then
+            echo "检测到上游官方主干有新提交 ($CURRENT_SYNC -> $LATEST_UPSTREAM)！触发自动合并构建。"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+            echo "upstream_sha=$LATEST_UPSTREAM" >> $GITHUB_OUTPUT
+            echo "sync_needed=true" >> $GITHUB_OUTPUT
+          else
+            echo "上游官方主干无新提交，跳过本次构建以节约云端资源。"
+            echo "should_build=false" >> $GITHUB_OUTPUT
+            echo "upstream_sha=$LATEST_UPSTREAM" >> $GITHUB_OUTPUT
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-switch:
+    name: "Build Switch Nightly (编译 Switch 汉化版)"
+    needs: check-upstream
+    if: needs.check-upstream.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20251117
+    permissions:
+      contents: write
+    steps:
+      - name: Fix dubious ownership
+        run: git config --global --add safe.directory '*'
+
+      - name: Install build tools and host dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt 2>/dev/null || echo "libsdl2-dev libpng-dev libgles2-mesa-dev ninja-build") zip git curl
+          sudo apt-get remove -y cmake || true
+          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
+          pip install --break-system-packages cryptography
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync upstream commits if needed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ "${{ needs.check-upstream.outputs.sync_needed }}" = "true" ]; then
+            echo "=== 同步上游官方主干最新提交 ==="
+            git remote add upstream https://github.com/HarbourMasters/Shipwright.git || true
+            git fetch upstream develop --depth 50
+            git merge upstream/develop -m "chore(sync): auto-merge upstream develop into Switch Chinese build"
+            echo "${{ needs.check-upstream.outputs.upstream_sha }}" > .upstream_sync_sha
+            git add .upstream_sync_sha
+            git commit -m "chore(sync): update upstream sync sha to ${{ needs.check-upstream.outputs.upstream_sha }}" || true
+            git push origin HEAD:${{ github.ref_name }} || echo "Push to origin failed or skipped (will build anyway)"
+          fi
+
+      - name: "Build Host Tools & Generate soh.o2r (同步生成最新 O2R 资源包)"
+        run: |
+          echo "=== 正在编译 GenerateSohOtr 并打包生成最新 soh.o2r ==="
+          cmake --no-warn-unused-cli -H. -Bbuild-tools -GNinja \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DSOH_TOOLS_ONLY=ON
+          cmake --build build-tools --config Release --target GenerateSohOtr -j$(nproc)
+          if [ -f build-tools/soh/soh.o2r ]; then
+            cp -v build-tools/soh/soh.o2r ./soh.o2r
+          fi
+          echo "soh.o2r 文件大小与校验:"
+          ls -lh soh.o2r
+
+      - name: "Build Switch soh.nro (编译原生英文配置菜单 + 神游中文剧情版)"
+        run: |
+          echo "=== 正在为 Nintendo Switch 交叉编译 soh.nro ==="
+          cmake -H. -Bbuild -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1
+          cmake --build build --target soh_nro --config Release -j$(nproc)
+          cp build/soh/*.nro ./soh.nro
+          echo "构建完成: soh.nro"
+          ls -lh soh.nro
+
+      - name: Verify Chinese symbols in NRO
+        run: |
+          echo "--- 校验 NRO 内部中文字符渲染与剧情表符号 ---"
+          strings soh.nro | grep "Font_LoadCharChinese" || (echo "Error: Font_LoadCharChinese not found" && exit 1)
+          strings soh.nro | grep "sChiMessageEntryTablePtr" || (echo "Error: sChiMessageEntryTablePtr not found" && exit 1)
+          echo "✓ 验证通过：神游 3D 剧情汉化与中文字模加载器完全就绪！"
+
+      - name: Package Switch Release Zip
+        run: |
+          mkdir -p switch/soh
+          cp soh.nro switch/soh/soh.nro
+          cp soh.o2r switch/soh/soh.o2r
+          if [ -f README.md ]; then
+            cp README.md switch/soh/readme.txt
+          fi
+          zip -r soh-switch-nightly-cn.zip switch/
+          echo "打包完成: soh-switch-nightly-cn.zip"
+          ls -lh soh-switch-nightly-cn.zip
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh-switch-nightly-cn
+          path: |
+            soh.nro
+            soh.o2r
+            soh-switch-nightly-cn.zip
+
+      - name: Publish Nightly Release
+        if: ${{ github.event.inputs.create_release != 'false' }}
+        run: |
+          SHORT_SHA=$(echo "${{ needs.check-upstream.outputs.upstream_sha }}" | cut -c1-7)
+          TAG_NAME="nightly-${SHORT_SHA}"
+          RELEASE_TITLE="SoH Switch Nightly 每日构建 (基于官方 ${SHORT_SHA} + 中文剧情)"
+          
+          # 创建或更新 Release
+          gh release delete "${TAG_NAME}" -y 2>/dev/null || true
+          gh release create "${TAG_NAME}" \
+            soh-switch-nightly-cn.zip \
+            soh.nro \
+            soh.o2r \
+            --title "${RELEASE_TITLE}" \
+            --notes "### 自动同步构建说明
+          - **官方主干 Commit**: [\`${SHORT_SHA}\`](https://github.com/HarbourMasters/Shipwright/commit/${{ needs.check-upstream.outputs.upstream_sha }})
+          - **修复特性**:
+            - 包含官方 PR #1306 / #1314：彻底修复 9.3.0 在高清纹理包下林克嘴巴、脸部与装备的拉伸歪斜问题。
+            - 包含 PR #1164：彻底修复水面与岩浆纹理在 >20fps 下的闪烁抖动问题。
+            - 彻底移除 ImGui 菜单字体注入，配置菜单 100% 保持 Switch 原生英文，杜绝字库显存溢出与黑色方块 Bug。
+            - 完整保留 3D 游戏内神游 (iQue) 官方全中文剧情对话与 24x24 点阵字模渲染。
+          
+          ### 安装方法
+          将解压后的 \`switch/soh/\` 文件夹完整拷贝至 Switch 的 SD 卡根目录 \`switch/\` 目录下，并放入使用 PC 版提取生成的 \`oot.o2r\` 游戏资产即可畅玩。" \
+            --prerelease
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
