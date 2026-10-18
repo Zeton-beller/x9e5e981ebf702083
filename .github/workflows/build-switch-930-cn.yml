@@ -37,6 +37,7 @@ jobs:
       - name: Checkout repository and submodules
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.SUBMODULE_TOKEN || github.token }}
           submodules: recursive
           fetch-depth: 0
 
