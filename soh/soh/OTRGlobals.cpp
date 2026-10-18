@@ -1046,7 +1046,40 @@ std::unordered_map<std::string, ExtensionEntry> ExtensionCache;
 void OTRAudio_Thread() {
 #if defined(__SWITCH__)
     Ship::Switch::SetCurrentThreadAffinity(2, (1 << 2), 0x2A);
-#endif
+
+#define SAMPLES_HIGH 560
+#define SAMPLES_LOW 528
+#define AUDIO_FRAMES_PER_UPDATE (R_UPDATE_RATE > 0 ? R_UPDATE_RATE : 1)
+#define NUM_AUDIO_CHANNELS 2
+
+    while (audio.running) {
+        int samples_left = AudioPlayer_Buffered();
+        int desired = AudioPlayer_GetDesiredBuffered();
+
+        if (samples_left < desired) {
+            u32 num_audio_samples = SAMPLES_HIGH;
+            s16 audio_buffer[SAMPLES_HIGH * NUM_AUDIO_CHANNELS * 3];
+            {
+                std::unique_lock<std::mutex> Lock(audio.mutex);
+                for (int i = 0; i < AUDIO_FRAMES_PER_UPDATE; i++) {
+                    AudioMgr_CreateNextAudioBuffer(audio_buffer + i * (num_audio_samples * NUM_AUDIO_CHANNELS),
+                                                   num_audio_samples);
+                }
+            }
+
+            AudioPlayer_Play((u8*)audio_buffer,
+                             num_audio_samples * (sizeof(int16_t) * NUM_AUDIO_CHANNELS * AUDIO_FRAMES_PER_UPDATE));
+
+            // If audio queue is critically low, continue immediately to catch up without sleeping
+            if (AudioPlayer_Buffered() < desired / 2) {
+                continue;
+            }
+        }
+
+        // Sleep briefly (3ms) to maintain consistent streaming without busy-waiting
+        std::this_thread::sleep_for(std::chrono::milliseconds(3));
+    }
+#else
     while (audio.running) {
         {
             std::unique_lock<std::mutex> Lock(audio.mutex);
@@ -1084,6 +1117,7 @@ void OTRAudio_Thread() {
         audio.processing = false;
         audio.cv_from_thread.notify_one();
     }
+#endif
 }
 
 void OTRAudio_Init() {
@@ -1810,12 +1844,14 @@ void RunCommands(Gfx* Commands, int time, int step, int denom, int count) {
 
 // C->C++ Bridge
 extern "C" void Graph_ProcessGfxCommands(Gfx* commands) {
+#if !defined(__SWITCH__)
     {
         std::unique_lock<std::mutex> Lock(audio.mutex);
         audio.processing = true;
     }
 
     audio.cv_to_thread.notify_one();
+#endif
     int target_fps = OTRGlobals::Instance->GetInterpolationFPS();
     static int last_fps;
     static int last_update_rate;
@@ -1856,17 +1892,33 @@ extern "C" void Graph_ProcessGfxCommands(Gfx* commands) {
         count = 1;
     }
 
+#if defined(__SWITCH__)
+    // Dynamic load balancing for Switch: If the previous frame took longer than 28ms (frame drop),
+    // drop intermediate interpolation draws to avoid piling up Draw Calls on the CPU during heavy scenes.
+    static auto sLastFrameTime = std::chrono::steady_clock::now();
+    auto now = std::chrono::steady_clock::now();
+    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - sLastFrameTime).count();
+    sLastFrameTime = now;
+
+    if (elapsedMs > 28 && count > 1) {
+        start_time = next_original_frame;
+        count = 1;
+    }
+#endif
+
     RunCommands(commands, start_time, step, next_original_frame, count);
 
     last_fps = fps;
     last_update_rate = R_UPDATE_RATE;
 
+#if !defined(__SWITCH__)
     {
         std::unique_lock<std::mutex> Lock(audio.mutex);
         while (audio.processing) {
             audio.cv_from_thread.wait(Lock);
         }
     }
+#endif
 
     bool curAltAssets = CVarGetInteger(CVAR_SETTING("AltAssets"), 1);
     if (prevAltAssets != curAltAssets) {
