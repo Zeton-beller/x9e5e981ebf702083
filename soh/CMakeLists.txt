@@ -256,6 +256,10 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set_target_properties(${PROJECT_NAME} PROPERTIES
     OUTPUT_NAME "soh.elf"
     )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "NintendoSwitch")
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        INTERPROCEDURAL_OPTIMIZATION_RELEASE "TRUE"
+    )
 endif()
 ################################################################################
 # MSVC runtime library
@@ -578,6 +582,9 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
             -Wno-narrowing
             -Wno-missing-braces
             -Wno-unknown-pragmas # #pragma region is an editor folding marker, GCC doesn't know it
+            -mtune=cortex-a57
+            -ftree-vectorize
+            $<$<CONFIG:Release>:-O3>
             $<$<COMPILE_LANGUAGE:C>:
                 -Werror-implicit-function-declaration
                 -Wno-incompatible-pointer-types

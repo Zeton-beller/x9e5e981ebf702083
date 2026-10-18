@@ -506,7 +506,14 @@ static void RunFrame() {
     exit(0);
 }
 
+#if defined(__SWITCH__)
+extern void Switch_BindMainThread(void);
+#endif
+
 void Graph_ThreadEntry(void* arg0) {
+#if defined(__SWITCH__)
+    Switch_BindMainThread();
+#endif
     while (WindowIsRunning()) {
         RunFrame();
     }

@@ -11,6 +11,7 @@ on:
   push:
     branches:
       - switch-9.3.0-cn
+      - switch-9.3.0-mt-opt
 
 jobs:
   build-switch:
@@ -95,28 +96,32 @@ jobs:
           strings soh.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese symbol not found"
           strings soh.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr symbol not found"
 
-      - name: Package Switch Chinese Clean Release
+      - name: Package Switch Release
         run: |
-          echo "=== 打包 Switch 9.3.0 纯净汉化版发行包 ==="
+          echo "=== 打包 Switch 发行包 ==="
           mkdir -p switch/soh
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          zip -r soh-switch-9.3.0-cn.zip switch/
+          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
+            zip -r soh-switch-9.3.0-cn-mt.zip switch/
+          else
+            zip -r soh-switch-9.3.0-cn.zip switch/
+          fi
           echo "压缩包验证:"
-          ls -lh soh-switch-9.3.0-cn.zip
+          ls -lh *.zip
 
       - name: Upload Switch Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: soh-switch-9.3.0-cn
+          name: soh-switch-release
           path: |
             soh.nro
             soh.o2r
-            soh-switch-9.3.0-cn.zip
+            *.zip
 
   publish-release:
-    name: "Publish to GitHub Releases (自动发布 9.3.0 纯净汉化版)"
+    name: "Publish to GitHub Releases (自动发布 Switch 发行版)"
     needs: build-switch
     runs-on: ubuntu-latest
     permissions:
@@ -125,17 +130,50 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: soh-switch-9.3.0-cn
+          name: soh-switch-release
 
       - name: Publish Release via GitHub CLI
         run: |
-          TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn' }}"
-          RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 纯净汉化版 (含脸部修复)"
-          
-          echo "Target Release Tag: ${TAG_NAME}"
-          echo "Commit SHA: ${{ github.sha }}"
+          IS_MT="false"
+          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
+            IS_MT="true"
+          fi
 
-          cat << 'EOF' > release_notes.md
+          if [ "${IS_MT}" = "true" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程CPU性能优化版 (含LTO/Cortex-A57/核绑定)"
+            ZIP_NAME="soh-switch-9.3.0-cn-mt.zip"
+            cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.0 多线程CPU性能优化版 (v9.3.0-cn-mt)
+
+          本版本基于**官方 9.3.0 纯净汉化稳定版**，深度实施针对 Nintendo Switch (Tegra X1) 硬件架构的三大多线程与CPU性能优化方案：
+
+          #### 🚀 核心优化与架构升级：
+          1. **方案一：全程序链接时优化 (LTO) 与 Cortex-A57 架构深度适配**
+             - 开启 GCC/Clang 生产级 LTO (`INTERPROCEDURAL_OPTIMIZATION_RELEASE`)，打通模块间跨编译单元内联与死代码消除。
+             - 针对 Tegra X1 定制 `-mtune=cortex-a57` 微架构指令调度与 `-ftree-vectorize` 自动向量化，启用 Release `-O3` 极致优化。
+          2. **方案二：ResourceManager 异步资源解压线程池扩展 (1 -> 2 线程)**
+             - 彻底打破单工作线程解压瓶颈，在 Switch 平台启用双并发工作线程 (`threadCount = 2`)。
+             - 在 `OtrArchive` 底层封装 StormLib MPQ/O2R 句柄互斥锁 (`mArchiveMutex`)，确保并发解压与大地图/高清材质流式加载绝对线程安全，杜绝场景切换与快速移动时的掉帧卡顿。
+          3. **方案三：Horizon OS 物理 CPU 核心亲和性与实时优先级分工绑定**
+             - **核心 0 (Core 0, 优先级 0x2B)**：专供主游戏循环与图形渲染主线程 (`Graph_ThreadEntry`)，保证画面平稳 60FPS/高刷新率调度。
+             - **核心 1 (Core 1, 优先级 0x2D)**：专供 ResourceManager 异步解压与后台加载线程池，利用空闲 CPU 算力高速并行解压。
+             - **核心 2 (Core 2, 优先级 0x2A 实时级)**：专供实时音频混音与播放线程 (`OTRAudio_Thread`)，彻底消除高负载复杂场景下的爆音与音频卡顿。
+             - **核心 3 (Core 3)**：完全保留给 Switch Horizon OS 系统服务与蓝牙驱动，避免与系统争抢核心中断。
+          4. **延续全套神游官方中文与脸部修复**：
+             - 完整保留 iQue 官方中文对白、字库与高精 UI 材质包。
+             - 完整保留 PR #1306 脸部纹理 Fast3D 渲染修复。
+
+          #### 安装方式：
+          1. 下载 `soh-switch-9.3.0-cn-mt.zip` 并解压。
+          2. 将解压得到的 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
+          EOF
+          else
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 纯净汉化版 (含脸部修复)"
+            ZIP_NAME="soh-switch-9.3.0-cn.zip"
+            cat << 'EOF' > release_notes.md
           ### Ship of Harkinian Switch 9.3.0 纯净汉化稳定版
 
           本版本基于**官方 9.3.0 (Dewey Alfa) 稳定发行版**构建，剔除所有上游未发布的实验性开发代码，提供最稳定可靠的游戏体验。
@@ -155,6 +193,10 @@ jobs:
           2. 将 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
           3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
           EOF
+          fi
+
+          echo "Target Release Tag: ${TAG_NAME}"
+          echo "Commit SHA: ${{ github.sha }}"
 
           # 删除同名已有发布（如存在）以便覆盖发布
           gh release delete "${TAG_NAME}" -y --cleanup-tag --repo "${GH_REPO}" || true
@@ -163,7 +205,7 @@ jobs:
           gh release create "${TAG_NAME}" \
             soh.nro \
             soh.o2r \
-            soh-switch-9.3.0-cn.zip \
+            "${ZIP_NAME}" \
             --title "${RELEASE_TITLE}" \
             --notes-file release_notes.md \
             --target "${{ github.sha }}" \

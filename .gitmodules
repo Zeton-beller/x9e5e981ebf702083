@@ -1,7 +1,7 @@
 [submodule "libultraship"]
 	path = libultraship
 	url = https://github.com/Zeton-beller/libultraship-switch.git
-	branch = main
+	branch = switch-mt-opt
 [submodule "torch"]
 	path = torch
 	url = https://github.com/HarbourMasters/Torch.git

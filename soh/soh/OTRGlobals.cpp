@@ -1,4 +1,4 @@
-﻿#include "OTRGlobals.h"
+#include "OTRGlobals.h"
 #include "OTRAudio.h"
 #include <algorithm>
 #include <atomic>
@@ -26,6 +26,9 @@
 #include <Windows.h>
 #else
 #include <time.h>
+#endif
+#if defined(__SWITCH__)
+#include <ship/port/switch/SwitchImpl.h>
 #endif
 #include <ship/resource/archive/O2rArchive.h>
 #include <ship/utils/binarytools/MemoryStream.h>
@@ -1041,6 +1044,9 @@ extern "C" int AudioPlayer_GetDesiredBuffered(void);
 std::unordered_map<std::string, ExtensionEntry> ExtensionCache;
 
 void OTRAudio_Thread() {
+#if defined(__SWITCH__)
+    Ship::Switch::SetCurrentThreadAffinity(2, (1 << 2), 0x2A);
+#endif
     while (audio.running) {
         {
             std::unique_lock<std::mutex> Lock(audio.mutex);
