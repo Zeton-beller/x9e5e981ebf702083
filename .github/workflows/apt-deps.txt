@@ -1,0 +1,4 @@
+libsdl2-dev
+libpng-dev
+libgles2-mesa-dev
+ninja-build

@@ -1,0 +1,172 @@
+name: "Build SoH Switch 9.3.0 CN (Clean Release)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag (发布版本标签)'
+        required: false
+        type: string
+        default: 'v9.3.0-cn'
+  push:
+    branches:
+      - switch-9.3.0-cn
+
+jobs:
+  build-switch:
+    name: "Build Switch 9.3.0 CN (编译 Switch 纯净 9.3.0 汉化版)"
+    runs-on: ubuntu-latest
+    container:
+      image: devkitpro/devkita64:20251117
+    permissions:
+      contents: write
+    steps:
+      - name: Fix dubious ownership
+        run: git config --global --add safe.directory '*'
+
+      - name: Install build tools, ccache and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip lsb-release $(cat .github/workflows/apt-deps.txt 2>/dev/null || echo "libsdl2-dev libpng-dev libgles2-mesa-dev ninja-build") zip git curl ccache
+          sudo apt-get remove -y cmake || true
+          sudo dkp-pacman -R --noconfirm switch-tinyxml2 || true
+          pip install --break-system-packages cryptography
+          wget https://github.com/Kitware/CMake/releases/download/v3.28.3/cmake-3.28.3-linux-x86_64.sh -O /tmp/cmake.sh
+          sudo sh /tmp/cmake.sh --prefix=/usr/local/ --exclude-subdir
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Restore compilation cache (ccache)
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-switch-clean-930-${{ hashFiles('CMakeLists.txt', 'soh/CMakeLists.txt') }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-switch-clean-930-${{ hashFiles('CMakeLists.txt', 'soh/CMakeLists.txt') }}-
+            ccache-switch-clean-930-
+
+      - name: Configure ccache environment
+        run: |
+          mkdir -p .ccache
+          export CCACHE_DIR="${PWD}/.ccache"
+          ccache --set-config=max_size=3G
+          ccache --set-config=compression=true
+          ccache --zero-stats
+          echo "CCACHE_DIR=${PWD}/.ccache" >> $GITHUB_ENV
+
+      - name: "Build Host Tools & Generate soh.o2r (生成纯净 9.3.0 汉化资源包)"
+        run: |
+          echo "=== 正在构建 GenerateSohOtr 并生成 soh.o2r ==="
+          cmake --no-warn-unused-cli -H. -Bbuild-tools -GNinja \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DSOH_TOOLS_ONLY=ON \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake --build build-tools --config Release --target GenerateSohOtr -j$(nproc)
+          if [ -f build-tools/soh/soh.o2r ]; then
+            cp -v build-tools/soh/soh.o2r ./soh.o2r
+          fi
+          echo "soh.o2r 校验:"
+          ls -lh soh.o2r
+
+      - name: "Build Switch Binary (编译 Switch 9.3.0 汉化版 soh.nro)"
+        run: |
+          echo "=== 正在编译 Switch 平台目标 (soh.nro) ==="
+          cmake -H. -Bbuild -GNinja \
+            -DCMAKE_TOOLCHAIN_FILE=/opt/devkitpro/cmake/Switch.cmake \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DBUILD_REMOTE_CONTROL=1 \
+            -DDISABLE_SCRIPTING=1 \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake --build build --target soh_nro --config Release -j$(nproc)
+          cp build/soh/*.nro soh.nro
+          echo "Switch 构建产物验证:"
+          ls -lh soh.nro
+
+      - name: Verify Chinese symbols and NRO integrity
+        run: |
+          echo "=== 正在校验 NRO 内部中文字库与函数符号 ==="
+          strings soh.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese symbol not found"
+          strings soh.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr symbol not found"
+
+      - name: Package Switch Chinese Clean Release
+        run: |
+          echo "=== 打包 Switch 9.3.0 纯净汉化版发行包 ==="
+          mkdir -p switch/soh
+          cp soh.nro switch/soh/soh.nro
+          cp soh.o2r switch/soh/soh.o2r
+          cp README.md switch/soh/readme.txt
+          zip -r soh-switch-9.3.0-cn.zip switch/
+          echo "压缩包验证:"
+          ls -lh soh-switch-9.3.0-cn.zip
+
+      - name: Upload Switch Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: soh-switch-9.3.0-cn
+          path: |
+            soh.nro
+            soh.o2r
+            soh-switch-9.3.0-cn.zip
+
+  publish-release:
+    name: "Publish to GitHub Releases (自动发布 9.3.0 纯净汉化版)"
+    needs: build-switch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: soh-switch-9.3.0-cn
+
+      - name: Publish Release via GitHub CLI
+        run: |
+          TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn' }}"
+          RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 纯净汉化版 (含脸部修复)"
+          
+          echo "Target Release Tag: ${TAG_NAME}"
+          echo "Commit SHA: ${{ github.sha }}"
+
+          cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.0 纯净汉化稳定版
+
+          本版本基于**官方 9.3.0 (Dewey Alfa) 稳定发行版**构建，剔除所有上游未发布的实验性开发代码，提供最稳定可靠的游戏体验。
+
+          #### 包含的核心组件：
+          - **官方主分支 9.3.0 稳定内核**：完整保留原汁原味的官方 9.3.0 逻辑，解决开发版可能引发的场景切换闪退。
+          - **Switch 掌机原生支持**：完整集成 Tim Schneeberger 官方 Switch 适配代码（OpenGL/SDL2、音频驱动、手柄映射）。
+          - **神游官方中文剧情与全套资产**：
+            - iQue 官方中文对白、任务剧情与道具名称
+            - 地点提示卡与全套高精汉化 UI 贴图
+            - 嵌入式中文点阵字库支持
+            - 配置菜单保持原生英文，杜绝方块黑框乱码
+          - **PR #1306 脸部纹理修复**：彻底修复 3D 林克在替换高清材质包时眼部与嘴部拉伸扭曲变形的 Fast3D 渲染 Bug。
+
+          #### 安装方式：
+          1. 下载 `soh-switch-9.3.0-cn.zip` 并解压。
+          2. 将 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
+          EOF
+
+          # 删除同名已有发布（如存在）以便覆盖发布
+          gh release delete "${TAG_NAME}" -y --cleanup-tag --repo "${GH_REPO}" || true
+
+          # 创建正式发布
+          gh release create "${TAG_NAME}" \
+            soh.nro \
+            soh.o2r \
+            soh-switch-9.3.0-cn.zip \
+            --title "${RELEASE_TITLE}" \
+            --notes-file release_notes.md \
+            --target "${{ github.sha }}" \
+            --repo "${GH_REPO}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}

@@ -1,6 +1,11 @@
 #pragma once
 
 #include <variant>
+#include <functional>
+#include <string>
+#include <vector>
+#include <map>
+#include <memory>
 
 #include "UIWidgetOptions.hpp"
 
