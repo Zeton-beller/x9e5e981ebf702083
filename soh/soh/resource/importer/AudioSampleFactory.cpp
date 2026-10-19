@@ -24,6 +24,8 @@ extern "C" {
 #include <vorbis/codec.h>
 #include "vorbis/vorbisfile.h"
 #include <tinyxml2.h>
+#include <spdlog/spdlog.h>
+#include <system_error>
 
 struct OggFileData {
     void* data;
@@ -96,27 +98,24 @@ static OggType GetOggType(OggFileData* data) {
     ogg_stream_state os;
     ogg_page og;
     ogg_packet op;
-    OggType type;
-    // The first page as the header information, containing, among other things, what kind of data this ogg holds.
+    OggType type = OggType::None;
+
+    // The first page has the header information, containing what kind of data this ogg holds.
     ogg_sync_init(&oy);
     char* buffer = ogg_sync_buffer(&oy, 4096);
     VorbisReadCallback(buffer, 4096, 1, data);
     ogg_sync_wrote(&oy, 4096);
 
-    ogg_sync_pageout(&oy, &og);
-    ogg_stream_init(&os, ogg_page_serialno(&og));
-    ogg_stream_pagein(&os, &og);
-    ogg_stream_packetout(&os, &op);
-
-    // Can't use strmp because op.packet isn't a null terminated string.
-    if (memcmp((char*)op.packet, "\x01vorbis", 7) == 0) {
-        type = OggType::Vorbis;
-    } else if (memcmp((char*)op.packet, "OpusHead", 8) == 0) {
-        type = OggType::Opus;
-    } else {
-        type = OggType::None;
+    if (ogg_sync_pageout(&oy, &og) > 0 && ogg_stream_init(&os, ogg_page_serialno(&og)) == 0) {
+        if (ogg_stream_pagein(&os, &og) == 0 && ogg_stream_packetout(&os, &op) > 0) {
+            if (op.bytes >= 7 && memcmp((char*)op.packet, "\x01vorbis", 7) == 0) {
+                type = OggType::Vorbis;
+            } else if (op.bytes >= 8 && memcmp((char*)op.packet, "OpusHead", 8) == 0) {
+                type = OggType::Opus;
+            }
+        }
+        ogg_stream_clear(&os);
     }
-    ogg_stream_clear(&os);
     ogg_sync_clear(&oy);
     return type;
 }
@@ -142,8 +141,7 @@ static void FlacDecoderWorker(std::shared_ptr<SOH::AudioSample> audioSample, std
     drflac_close(flac);
 }
 
-static void OggDecoderWorker(std::shared_ptr<SOH::AudioSample> audioSample, std::shared_ptr<Ship::File> sampleFile,
-                             std::shared_ptr<Ship::ResourceInitData> initData) {
+static void VorbisDecoderWorker(std::shared_ptr<SOH::AudioSample> audioSample, std::shared_ptr<Ship::File> sampleFile) {
     OggVorbis_File vf;
     char dataBuff[4096];
     long read = 0;
@@ -154,43 +152,31 @@ static void OggDecoderWorker(std::shared_ptr<SOH::AudioSample> audioSample, std:
         .pos = 0,
         .size = sampleFile->Buffer.get()->size(),
     };
-    switch (GetOggType(&fileData)) {
-        case OggType::Vorbis: {
-            // Getting the type advanced the position. We are going to use a different library to decode the file which
-            // assumes the file starts at 0
-            fileData.pos = 0;
-            int ret = ov_open_callbacks(&fileData, &vf, nullptr, 0, vorbisCallbacks);
-
-            vorbis_info* vi = ov_info(&vf, -1);
-
-            uint64_t numFrames = ov_pcm_total(&vf, -1);
-            uint64_t sampleRate = vi->rate;
-            uint64_t numChannels = vi->channels;
-            int bitStream = 0;
-            size_t toRead = numFrames * numChannels * 2;
-            audioSample->sample.sampleAddr = new uint8_t[toRead];
-            do {
-                read = ov_read(&vf, dataBuff, 4096, 0, 2, 1, &bitStream);
-                memcpy(audioSample->sample.sampleAddr + pos, dataBuff, read);
-                pos += read;
-            } while (read != 0);
-            ov_clear(&vf);
-            break;
-        }
-        case OggType::Opus: {
-            // OPUS encoded data is decoded by the audio driver.
-            audioSample->sample.codec = CODEC_OPUS;
-            audioSample->sample.sampleAddr = new uint8_t[sampleFile->Buffer.get()->size()];
-            memcpy(audioSample->sample.sampleAddr, sampleFile->Buffer.get()->data(), sampleFile->Buffer.get()->size());
-            break;
-        }
-        case OggType::None: {
-            char buff[2048];
-            snprintf(buff, 2048, "Ogg file %s is not Vorbis or OPUS", initData->Path.c_str());
-            throw std::runtime_error(buff);
-            break;
-        }
+    int ret = ov_open_callbacks(&fileData, &vf, nullptr, 0, vorbisCallbacks);
+    if (ret != 0) {
+        return;
     }
+
+    vorbis_info* vi = ov_info(&vf, -1);
+    if (vi == nullptr) {
+        ov_clear(&vf);
+        return;
+    }
+
+    uint64_t numFrames = ov_pcm_total(&vf, -1);
+    uint64_t sampleRate = vi->rate;
+    uint64_t numChannels = vi->channels;
+    int bitStream = 0;
+    size_t toRead = numFrames * numChannels * 2;
+    audioSample->sample.sampleAddr = new uint8_t[toRead];
+    do {
+        read = ov_read(&vf, dataBuff, 4096, 0, 2, 1, &bitStream);
+        if (read > 0) {
+            memcpy(audioSample->sample.sampleAddr + pos, dataBuff, read);
+            pos += read;
+        }
+    } while (read > 0);
+    ov_clear(&vf);
 }
 
 namespace SOH {
@@ -295,10 +281,12 @@ ResourceFactoryXMLAudioSampleV0::ReadResource(std::shared_ptr<Ship::File> file,
     const char* path = child->Attribute("Path");
 
     auto sampleFile = Ship::Context::GetRawInstance()->GetResourceManager()->GetArchiveManager()->LoadFile(path);
+    if (sampleFile == nullptr || sampleFile->Buffer == nullptr) {
+        SPDLOG_ERROR("AudioSampleFactory: Failed to load sample file data at path: {}", path ? path : "nullptr");
+        return nullptr;
+    }
     audioSample->sample.fileSize = static_cast<u32>(sampleFile->Buffer.get()->size());
     if (customFormatStr != nullptr) {
-        // Compressed files can take a really long time to decode (~250ms per).
-        // This worked when we tested it (09/04/2024) (Works on my machine)
         if (strcmp(customFormatStr, "wav") == 0) {
             drwav wav;
             drwav_uint64 numFrames;
@@ -314,16 +302,50 @@ ResourceFactoryXMLAudioSampleV0::ReadResource(std::shared_ptr<Ship::File> file,
             drwav_read_pcm_frames_s16(&wav, numFrames, (int16_t*)audioSample->sample.sampleAddr);
             return audioSample;
         } else if (strcmp(customFormatStr, "mp3") == 0) {
-            std::thread fileDecoderThread = std::thread(Mp3DecoderWorker, audioSample, sampleFile);
-            fileDecoderThread.detach();
+            try {
+                std::thread fileDecoderThread = std::thread(Mp3DecoderWorker, audioSample, sampleFile);
+                fileDecoderThread.detach();
+            } catch (const std::system_error& e) {
+                SPDLOG_WARN("AudioSampleFactory: Thread spawn failed for MP3, falling back to sync decode: {}", e.what());
+                Mp3DecoderWorker(audioSample, sampleFile);
+            }
             return audioSample;
         } else if (strcmp(customFormatStr, "ogg") == 0) {
-            std::thread fileDecoderThread = std::thread(OggDecoderWorker, audioSample, sampleFile, initData);
-            fileDecoderThread.detach();
-            return audioSample;
+            OggFileData fileData = {
+                .data = sampleFile->Buffer.get()->data(),
+                .pos = 0,
+                .size = sampleFile->Buffer.get()->size(),
+            };
+            OggType oggType = GetOggType(&fileData);
+            if (oggType == OggType::Opus) {
+                // OPUS encoded data is decoded by the audio driver dynamically at playback time.
+                // It only requires copying the raw compressed bytes into sampleAddr and does NOT need PCM decoding here.
+                // Performing this synchronously avoids spawning 170 threads that exceed Switch's Horizon OS kernel limits.
+                audioSample->sample.codec = CODEC_OPUS;
+                audioSample->sample.sampleAddr = new uint8_t[sampleFile->Buffer.get()->size()];
+                memcpy(audioSample->sample.sampleAddr, sampleFile->Buffer.get()->data(), sampleFile->Buffer.get()->size());
+                return audioSample;
+            } else if (oggType == OggType::Vorbis) {
+                try {
+                    std::thread fileDecoderThread = std::thread(VorbisDecoderWorker, audioSample, sampleFile);
+                    fileDecoderThread.detach();
+                } catch (const std::system_error& e) {
+                    SPDLOG_WARN("AudioSampleFactory: Thread spawn failed for Vorbis, falling back to sync decode: {}", e.what());
+                    VorbisDecoderWorker(audioSample, sampleFile);
+                }
+                return audioSample;
+            } else {
+                SPDLOG_ERROR("AudioSampleFactory: Ogg file {} is not Vorbis or OPUS", initData->Path.c_str());
+                return nullptr;
+            }
         } else if (strcmp(customFormatStr, "flac") == 0) {
-            std::thread fileDecoderThread = std::thread(FlacDecoderWorker, audioSample, sampleFile);
-            fileDecoderThread.detach();
+            try {
+                std::thread fileDecoderThread = std::thread(FlacDecoderWorker, audioSample, sampleFile);
+                fileDecoderThread.detach();
+            } catch (const std::system_error& e) {
+                SPDLOG_WARN("AudioSampleFactory: Thread spawn failed for FLAC, falling back to sync decode: {}", e.what());
+                FlacDecoderWorker(audioSample, sampleFile);
+            }
             return audioSample;
         }
     }
