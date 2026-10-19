@@ -104,7 +104,9 @@ jobs:
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo" ]; then
+            zip -r soh-switch-9.3.0-cn-mt-zreo.zip switch/
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             zip -r soh-switch-9.3.0-cn-mt.zip switch/
           else
             zip -r soh-switch-9.3.0-cn.zip switch/
@@ -135,12 +137,36 @@ jobs:
 
       - name: Publish Release via GitHub CLI
         run: |
-          IS_MT="false"
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
-            IS_MT="true"
-          fi
+          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt-zreo' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程CPU优化 + ZREO高清音乐修复版"
+            ZIP_NAME="soh-switch-9.3.0-cn-mt-zreo.zip"
+            cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.0 多线程CPU优化 + ZREO高清音乐修复版 (v9.3.0-cn-mt-zreo)
 
-          if [ "${IS_MT}" = "true" ]; then
+          本版本在**多线程性能优化版 (v9.3.0-cn-mt)** 的基础上，针对 **ZREO 高清音乐替换模组启动黑屏死锁**、**音频线程与主线程锁死互斥** 以及 **掉帧卡死恶性循环** 进行了深度源码级重构与修复：
+
+          #### 🎵 1. 【重大修复】ZREO 音乐模组黑屏死锁彻底根治 (Opus 零线程同步直载)
+          - 原版在启动加载 ZREO（成年篇与幼年篇）共 85 个音色库时，瞬间盲目并发派发了 170 个原生操作系统线程，打穿 Switch Horizon OS 内核线程句柄硬配额上限 (`svcCreateThread` 失败抛出 `std::system_error`)，导致游戏在启动 Logo 画面前永久黑屏挂死并伴随空指针竞态。
+          - 本版识别 Opus 流式音频后，直接就地同步内存直载，将开机创建线程数由 170 个降为 0 个，彻底消除内核超限与空指针崩溃风险，完美无损享受 ZREO 全套高品质管弦乐！
+
+          #### ⚡ 2. 音频线程与主线程彻底解耦 (Core 2 独立自主流式播放)
+          - 彻底移除了渲染主循环每帧对音频线程的条件变量阻塞等待锁，将音频线程专属绑定在 Core 2 (优先级 0x2A 实时级) 自主独立循环轮询，杜绝 CPU 核心之间的相互死等与拖累。
+
+          #### 🛡️ 3. 掉帧场景动态单帧负载均衡 (防雪崩机制)
+          - 当单帧耗时超过 28ms（帧率跌破约 35 FPS 时判定为严重卡顿），系统仅在当前这一个异常帧临时跳过中间冗余插帧绘制，为 CPU 减轻一半 Draw Calls，打破城堡镇等复杂场景下的雪崩式卡死恶性循环；帧耗时恢复正常后立即全速恢复高平滑度插帧渲染。
+
+          #### 🚀 4. 深度 CPU 多核优化与官方中文延续
+          - LTO 全程序链接时优化 + Cortex-A57 微架构适配；
+          - ResourceManager 双线程解压池加速场景与高清纹理加载；
+          - 完整保留 iQue 官方神游中文对白、字库、高精 UI 与 PR #1306 脸部纹理修复。
+
+          #### 📦 安装方式：
+          1. 下载 `soh-switch-9.3.0-cn-mt-zreo.zip` 并解压。
+          2. 将解压得到的 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
+          EOF
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt' }}"
             RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程CPU性能优化版 (含LTO/Cortex-A57/核绑定)"
             ZIP_NAME="soh-switch-9.3.0-cn-mt.zip"
