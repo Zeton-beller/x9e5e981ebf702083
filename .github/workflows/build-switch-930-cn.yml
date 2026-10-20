@@ -105,7 +105,9 @@ jobs:
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-opt" ]; then
+            zip -r soh-switch-9.3.0-cn-mt-zreo-opt.zip switch/
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo" ]; then
             zip -r soh-switch-9.3.0-cn-mt-zreo.zip switch/
           elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             zip -r soh-switch-9.3.0-cn-mt.zip switch/
