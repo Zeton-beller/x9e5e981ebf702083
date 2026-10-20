@@ -2980,8 +2980,9 @@ s32 Actor_CullingVolumeTest(PlayState* play, Actor* actor, Vec3f* arg2, f32 arg3
 
 // #region SOH [Enhancements] Allows us to increase the draw and update distance independently,
 // mostly a modified version of the function above and additional tweaks for some specfic actors
-s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW, bool* shouldDraw,
-                                 bool* shouldUpdate) {
+s32 Ship_CalcShouldDrawAndUpdateFast(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW,
+                                     bool* shouldDraw, bool* shouldUpdate, s32 multiplier, f32 ratioAdjusted,
+                                     s32 excludeGlitchActors) {
     f32 clampedProjectedW;
 
     // Check if the actor passes its original/vanilla culling requirements
@@ -2996,9 +2997,6 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
         return false;
     }
 
-    s32 multiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
-    multiplier = MAX(multiplier, 1);
-
     // Some actors have a really short forward value, so we need to add to it before the multiplier to increase the
     // final strength of the forward culling
     f32 adder = (actor->uncullZoneForward < 500) ? 1000.0f : 0.0f;
@@ -3007,19 +3005,11 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
         (projectedPos->z < (((actor->uncullZoneForward + adder) * multiplier) + actor->uncullZoneScale))) {
         clampedProjectedW = (projectedW < 1.0f) ? 1.0f : 1.0f / projectedW;
 
-        f32 ratioAdjusted = 1.0f;
-
-        if (CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
-            f32 originalAspectRatio = 4.0f / 3.0f;
-            f32 currentAspectRatio = OTRGetAspectRatio();
-            ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
-        }
-
         if ((((fabsf(projectedPos->x) - actor->uncullZoneScale) * (clampedProjectedW / ratioAdjusted)) < 1.0f) &&
             (((projectedPos->y + actor->uncullZoneDownward) * clampedProjectedW) > -1.0f) &&
             (((projectedPos->y - actor->uncullZoneScale) * clampedProjectedW) < 1.0f)) {
 
-            if (CVarGetInteger(CVAR_ENHANCEMENT("ExtendedCullingExcludeGlitchActors"), 0)) {
+            if (excludeGlitchActors) {
                 // These actors are safe to draw without impacting glitches
                 if ((actor->id == ACTOR_OBJ_BOMBIWA || actor->id == ACTOR_OBJ_HAMISHI ||
                      actor->id == ACTOR_EN_ISHI) || // Boulders (hookshot through collision)
@@ -3050,6 +3040,24 @@ s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projected
 
     return false;
 }
+
+s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW, bool* shouldDraw,
+                                 bool* shouldUpdate) {
+    s32 multiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
+    multiplier = MAX(multiplier, 1);
+
+    f32 ratioAdjusted = 1.0f;
+    if (CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
+        f32 originalAspectRatio = 4.0f / 3.0f;
+        f32 currentAspectRatio = OTRGetAspectRatio();
+        ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
+    }
+
+    s32 excludeGlitchActors = CVarGetInteger(CVAR_ENHANCEMENT("ExtendedCullingExcludeGlitchActors"), 0);
+
+    return Ship_CalcShouldDrawAndUpdateFast(play, actor, projectedPos, projectedW, shouldDraw, shouldUpdate,
+                                            multiplier, ratioAdjusted, excludeGlitchActors);
+}
 // #endregion
 
 void Actor_DrawAll(PlayState* play, ActorContext* actorCtx) {
@@ -3062,6 +3070,21 @@ void Actor_DrawAll(PlayState* play, ActorContext* actorCtx) {
     invisibleActorCounter = 0;
 
     OPEN_DISPS(play->state.gfxCtx);
+
+    s32 cullingMultiplier = CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1);
+    s32 widescreenCulling = CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0);
+    bool useExtendedCulling = (cullingMultiplier > 1) || widescreenCulling;
+    f32 ratioAdjusted = 1.0f;
+    s32 excludeGlitchActors = 0;
+    if (useExtendedCulling) {
+        cullingMultiplier = MAX(cullingMultiplier, 1);
+        if (widescreenCulling) {
+            f32 originalAspectRatio = 4.0f / 3.0f;
+            f32 currentAspectRatio = OTRGetAspectRatio();
+            ratioAdjusted = MAX(currentAspectRatio / originalAspectRatio, 1.0f);
+        }
+        excludeGlitchActors = CVarGetInteger(CVAR_ENHANCEMENT("ExtendedCullingExcludeGlitchActors"), 0);
+    }
 
     actorListEntry = &actorCtx->actorLists[0];
 
@@ -3091,10 +3114,10 @@ void Actor_DrawAll(PlayState* play, ActorContext* actorCtx) {
             bool shipShouldDraw = false;
             bool shipShouldUpdate = false;
             if ((HREG(64) != 1) || ((HREG(65) != -1) && (HREG(65) != HREG(66))) || (HREG(70) == 0)) {
-                if (CVarGetInteger(CVAR_ENHANCEMENT("DisableDrawDistance"), 1) > 1 ||
-                    CVarGetInteger(CVAR_ENHANCEMENT("WidescreenActorCulling"), 0)) {
-                    Ship_CalcShouldDrawAndUpdate(play, actor, &actor->projectedPos, actor->projectedW, &shipShouldDraw,
-                                                 &shipShouldUpdate);
+                if (useExtendedCulling) {
+                    Ship_CalcShouldDrawAndUpdateFast(play, actor, &actor->projectedPos, actor->projectedW,
+                                                     &shipShouldDraw, &shipShouldUpdate,
+                                                     cullingMultiplier, ratioAdjusted, excludeGlitchActors);
 
                     if (shipShouldUpdate) {
                         actor->flags |= ACTOR_FLAG_INSIDE_CULLING_VOLUME;

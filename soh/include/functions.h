@@ -2467,6 +2467,9 @@ void Font_LoadOrderedFontNTSC(Font* font);
 // #region SOH [General]
 s32 Ship_CalcShouldDrawAndUpdate(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW, bool* shouldDraw,
                                  bool* shouldUpdate);
+s32 Ship_CalcShouldDrawAndUpdateFast(PlayState* play, Actor* actor, Vec3f* projectedPos, f32 projectedW,
+                                     bool* shouldDraw, bool* shouldUpdate, s32 multiplier, f32 ratioAdjusted,
+                                     s32 excludeGlitchActors);
 
 // #region SOH [Rocs Feather]
 void func_80838940(Player* this, LinkAnimationHeader* anim, f32 arg2, PlayState* play, u16 sfxId);
