@@ -139,12 +139,12 @@ jobs:
         run: |
           if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-fix" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo" ]; then
             TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt-zreo' }}"
-            RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程CPU优化 + ZREO高清音乐修复版"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程优化 + 自适应插帧 + ZREO高清音乐修复版"
             ZIP_NAME="soh-switch-9.3.0-cn-mt-zreo.zip"
             cat << 'EOF' > release_notes.md
-          ### Ship of Harkinian Switch 9.3.0 多线程CPU优化 + ZREO高清音乐修复版 (v9.3.0-cn-mt-zreo)
+          ### Ship of Harkinian Switch 9.3.0 多线程优化 + 自适应插帧 + ZREO高清音乐修复版 (v9.3.0-cn-mt-zreo)
 
-          本版本在**多线程性能优化版 (v9.3.0-cn-mt)** 的基础上，针对 **ZREO 高清音乐替换模组启动黑屏死锁**、**音频线程与主线程锁死互斥** 以及 **掉帧卡死恶性循环** 进行了深度源码级重构与修复：
+          本版本在**多线程性能优化版 (v9.3.0-cn-mt)** 的基础上，针对 **ZREO 高清音乐替换模组启动黑屏死锁**、**音频线程与主线程锁死互斥** 以及 **自适应插帧负载均衡与菜单自定义** 进行了深度源码级重构与升级：
 
           #### 🎵 1. 【重大修复】ZREO 音乐模组黑屏死锁彻底根治 (Opus 零线程同步直载)
           - 原版在启动加载 ZREO（成年篇与幼年篇）共 85 个音色库时，瞬间盲目并发派发了 170 个原生操作系统线程，打穿 Switch Horizon OS 内核线程句柄硬配额上限 (`svcCreateThread` 失败抛出 `std::system_error`)，导致游戏在启动 Logo 画面前永久黑屏挂死并伴随空指针竞态。
@@ -153,8 +153,12 @@ jobs:
           #### ⚡ 2. 音频线程与主线程彻底解耦 (Core 2 独立自主流式播放)
           - 彻底移除了渲染主循环每帧对音频线程的条件变量阻塞等待锁，将音频线程专属绑定在 Core 2 (优先级 0x2A 实时级) 自主独立循环轮询，杜绝 CPU 核心之间的相互死等与拖累。
 
-          #### 🛡️ 3. 掉帧场景动态单帧负载均衡 (防雪崩机制)
-          - 当单帧耗时超过 28ms（帧率跌破约 35 FPS 时判定为严重卡顿），系统仅在当前这一个异常帧临时跳过中间冗余插帧绘制，为 CPU 减轻一半 Draw Calls，打破城堡镇等复杂场景下的雪崩式卡死恶性循环；帧耗时恢复正常后立即全速恢复高平滑度插帧渲染。
+          #### 🛡️ 3. 【全新升级】自适应插帧回退机制与菜单自定义滑块 (防雪崩动态负载均衡)
+          - **自适应比例判定**：彻底废弃此前单一粗暴的固定 28ms/35FPS 硬回退，改为根据选择的目标帧率或“自适应刷新率(Match Refresh Rate)”目标按 50% 比例动态自适应计算（例如目标为 60 帧时，在 30~60 帧区间均能平滑享受插帧，仅在重负载掉破 30 帧时才切断冗余插帧削减 CPU Draw Calls 负载，杜绝雪崩掉帧）。
+          - **设置菜单增加自定义滑块**：在游戏设置菜单【Graphics】下新增 `Drop Interpolation Below` 滑块，提供极高自定义自由度：
+            * `Adaptive (50% Target)`：自动按目标帧率 50% 动态自适应（默认推荐）。
+            * `Disabled (Never Drop)`：完全关闭回退机制，任何低帧率下均不跳过插帧。
+            * `自定义数值 (2~60 FPS)`：玩家可根据个人喜好自由设定具体回退帧率阈值。
 
           #### 🚀 4. 深度 CPU 多核优化与官方中文延续
           - LTO 全程序链接时优化 + Cortex-A57 微架构适配；

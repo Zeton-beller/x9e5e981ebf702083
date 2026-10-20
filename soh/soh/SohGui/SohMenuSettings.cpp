@@ -435,6 +435,45 @@ void SohMenu::AddMenuSettings() {
         .CVar(CVAR_SETTING("MatchRefreshRate"))
         .RaceDisable(false)
         .Options(CheckboxOptions().Tooltip("Matches interpolation value to the refresh rate of your display."));
+#if defined(__SWITCH__)
+    auto fallbackVal = CVarGetInteger(CVAR_SETTING("InterpolationFallbackFPS"), 0);
+    const char* fallbackFormat = fallbackVal == 0 ? "Adaptive (50% Target)" :
+                                 fallbackVal == 1 ? "Disabled (Never Drop)" : "%d FPS";
+    AddWidget(path, "Drop Interpolation Below", WIDGET_CVAR_SLIDER_INT)
+        .CVar(CVAR_SETTING("InterpolationFallbackFPS"))
+        .RaceDisable(false)
+        .Callback([](WidgetInfo& info) {
+            auto options = std::static_pointer_cast<IntSliderOptions>(info.options);
+            int32_t val = CVarGetInteger(info.cVar, 0);
+            if (val == 0) {
+                options->format = "Adaptive (50% Target)";
+            } else if (val == 1) {
+                options->format = "Disabled (Never Drop)";
+            } else {
+                options->format = "%d FPS";
+            }
+        })
+        .PreFunc([](WidgetInfo& info) {
+            auto options = std::static_pointer_cast<IntSliderOptions>(info.options);
+            int32_t val = CVarGetInteger(info.cVar, 0);
+            if (val == 0) {
+                options->format = "Adaptive (50% Target)";
+            } else if (val == 1) {
+                options->format = "Disabled (Never Drop)";
+            } else {
+                options->format = "%d FPS";
+            }
+        })
+        .Options(IntSliderOptions()
+                     .Tooltip("When performance drops under heavy load, intermediate interpolated frames are skipped to prevent severe frame pacing stutter.\n\n"
+                              "• Adaptive (50% Target): Automatically drops interpolation if FPS drops below 50% of the target FPS (e.g. below 30 FPS when target is 60 FPS).\n"
+                              "• Disabled (Never Drop): Always renders interpolated frames regardless of slowdown.\n"
+                              "• Custom FPS: Manually set the frame rate threshold below which interpolation is skipped.")
+                     .Min(0)
+                     .Max(60)
+                     .DefaultValue(0)
+                     .Format(fallbackFormat));
+#endif
     AddWidget(path, "Renderer API (Needs reload)", WIDGET_VIDEO_BACKEND).RaceDisable(false);
     AddWidget(path, "Enable Vsync", WIDGET_CVAR_CHECKBOX)
         .CVar(CVAR_VSYNC_ENABLED)

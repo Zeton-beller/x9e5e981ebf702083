@@ -1893,16 +1893,31 @@ extern "C" void Graph_ProcessGfxCommands(Gfx* commands) {
     }
 
 #if defined(__SWITCH__)
-    // Dynamic load balancing for Switch: If the previous frame took longer than 28ms (frame drop),
+    // Dynamic load balancing for Switch: If frame time exceeds the fallback threshold,
     // drop intermediate interpolation draws to avoid piling up Draw Calls on the CPU during heavy scenes.
     static auto sLastFrameTime = std::chrono::steady_clock::now();
     auto now = std::chrono::steady_clock::now();
-    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(now - sLastFrameTime).count();
+    auto elapsedUs = std::chrono::duration_cast<std::chrono::microseconds>(now - sLastFrameTime).count();
     sLastFrameTime = now;
 
-    if (elapsedMs > 28 && count > 1) {
-        start_time = next_original_frame;
-        count = 1;
+    int thresholdSetting = CVarGetInteger(CVAR_SETTING("InterpolationFallbackFPS"), 0);
+    int fallbackFps = 0;
+    if (thresholdSetting == 1) {
+        fallbackFps = 0; // Disabled: never drop interpolation
+    } else if (thresholdSetting >= 2) {
+        fallbackFps = thresholdSetting;
+    } else {
+        // 0 (Adaptive): 50% of effective target FPS
+        // e.g. at 60 FPS target, drops when below 30 FPS (33.3ms)
+        fallbackFps = target_fps > 20 ? (target_fps / 2) : 0;
+    }
+
+    if (fallbackFps > 0 && count > 1) {
+        int64_t thresholdUs = 1000000 / fallbackFps;
+        if (elapsedUs > thresholdUs) {
+            start_time = next_original_frame;
+            count = 1;
+        }
     }
 #endif
 
