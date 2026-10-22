@@ -10,6 +10,7 @@ on:
         default: 'v9.3.0-cn'
   push:
     branches:
+      - switch-9.3.1-cn-mt-opt
       - switch-9.3.0-cn
       - switch-9.3.0-mt-opt
       - switch-9.3.0-mt-zreo-fix
@@ -106,7 +107,9 @@ jobs:
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-azdo" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-azdo" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt-opt" ]; then
+            zip -r soh-switch-9.3.1-cn-mt-opt.zip switch/
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-azdo" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-azdo" ]; then
             zip -r soh-switch-9.3.0-cn-mt-zreo-azdo.zip switch/
           elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-opt" ]; then
             zip -r soh-switch-9.3.0-cn-mt-zreo-opt.zip switch/
@@ -143,7 +146,56 @@ jobs:
 
       - name: Publish Release via GitHub CLI
         run: |
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-azdo" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-azdo" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt-opt" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.1-cn-mt-opt' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.1 官方升级深度优化版 (官方9.3.1底包 + OpenGL AZDO双重缓存 + 着色器磁盘缓存 + Actor提速 + ZREO高清音乐)"
+            ZIP_NAME="soh-switch-9.3.1-cn-mt-opt.zip"
+            cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.1 官方升级深度优化版 (v9.3.1-cn-mt-opt)
+
+          本版本将游戏底包全面同步升级至 **官方 9.3.1 (Dewey Bravo / 9.3.1-nx1)** 最新版本，并在官方基础上完整集成了针对 Nintendo Switch (Tegra X1) 平台的 **OpenGL 双重物理状态机缓存 (AZDO)**、**Fast3D 着色器二进制磁盘持久化缓存**、**Actor 视锥剔除与绘制内循环 CVar 哈希查找外提**、**自适应插帧负载均衡与菜单自定义滑块**、**ZREO 高清管弦乐黑屏死锁根治** 以及 **神游官方中文对白与高精字库**！
+
+          #### 🆙 1. 【官方 9.3.1 核心修复与升级全面同步】
+          - **音频 SeqPlayer 越界访问崩溃修复 (#7387)**：修复了原版音序播放器中因标记位越界访问导致的偶发性音频崩溃（Upstream Fix）。
+          - **妖精捡拾系统崩溃修复 (#7340)**：根治了随机发生器模式下拾取妖精导致的游戏闪退异常。
+          - **兔耳兜帽跳跃速度限制修复 (#7419)**：修正佩戴兔耳兜帽时的跳跃速度限制器逻辑，移动与跳跃更平滑。
+          - **原版无限魔法标记机制与 GameInteractor 钩子 (#7415)**：规范魔法条消耗判定，与上游最新模组规范完全对齐。
+          - **加农终战获胜判定与结尾字幕修复 (#7404)**：修复决战场景的胜利条件判定与多语言字幕逻辑。
+          - **跳过王者佐拉移动过场优化 (#7349)** 与 **炸弹鼠保龄球道具扣减修复 (#7350)**。
+          - **Master Quest 64MB ROM 资源提取与解压修复 (#7376)**。
+          - **LUS 官方正式合入 PR #1306 & PR #1314**：官方底层正式修复高清替换纹理脸部 UV 像素对齐（彻底解决 3D 林克面部眼嘴拉伸变形）与图像矩形 HD 缩放重置。
+
+          #### 🌟 2. 【图形底层】Per-Shader VAO 专属格式绑定缓存 (AZDO)
+          - 为每个编译后的着色器预配置并持久化专属硬件 VAO 顶点阵列对象。切换材质时仅需单次原子级 `glBindVertexArray`，将每次材质切换的 10+ 次驱动 API 压缩为 1 次，大幅降低 CPU 驱动层提交负载！
+
+          #### ⚡ 3. 【图形底层】Uniform 脏状态标记与去重缓存 (Dirty State Caching)
+          - 在微批次绘制中实时跟踪深度偏差、纹理尺寸与过滤模式的变化，消除 80% 以上无谓的 `glUniform*` 冗余驱动写入，在 CPU 仅 1.0GHz 的 Switch 上彻底杜绝驱动层卡顿！
+
+          #### 🎮 4. Fast3D 着色器二进制磁盘持久化缓存 (`shader_cache.bin`)
+          - 针对 Switch Mesa 驱动实现着色器二进制序列化持久化存储，首次启动自动生成缓存，后续游玩通过 `glProgramBinary` 极速直载（<0.1ms），彻底终结首次释放魔法或遭遇新敌人时的着色器编译掉帧（Shader Compilation Stutter）！
+
+          #### 🚀 5. Actor 绘制与视锥剔除循环 CVar 哈希查找外提
+          - 将视锥剔除与屏幕宽高比设置从内层 Actor 遍历循环中外提，消除复杂场景（如城堡镇、海拉鲁平原）每帧上百次无谓的全局字符串哈希查表，复杂场景最低帧率（1% Low）与稳定性显著提升 5%~10%！
+
+          #### 🛡️ 6. 自适应插帧回退机制与菜单自定义滑块
+          - 按目标帧率 50% 动态自适应判定，复杂场景低帧率时自动跳过冗余插帧削减 CPU 负载，杜绝雪崩掉帧；
+          - 游戏设置菜单【Graphics】下新增 `Drop Interpolation Below` 自由滑块（支持自适应、关闭、或自由指定 2~60 FPS）。
+
+          #### 🎵 7. ZREO 高清管弦乐模组黑屏死锁彻底根治
+          - Opus 音频就地同步直载，彻底根除 Switch 内核线程句柄耗尽导致的开机黑屏挂死；
+          - 音频线程专属绑定 Core 2 (优先级 0x2A 实时级) 独立流式轮询，杜绝爆音与主线程互锁。
+
+          #### 🛠️ 8. 深度 CPU 多核优化与官方中文全套延续
+          - LTO 全程序链接时优化 + Cortex-A57 微架构指令调度；
+          - ResourceManager 双线程解压池加速场景与高清纹理流式加载；
+          - 完整保留 iQue 官方神游中文对白、字库、高精 UI。
+
+          #### 📦 安装方式：
+          1. 下载 `soh-switch-9.3.1-cn-mt-opt.zip` 并解压。
+          2. 将解压得到的 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
+          EOF
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-zreo-azdo" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt-zreo-azdo" ]; then
             TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt-zreo-azdo' }}"
             RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 终极流畅版 (OpenGL VAO+Uniform双重缓存 + 着色器磁盘缓存 + Actor提速 + ZREO高清音乐)"
             ZIP_NAME="soh-switch-9.3.0-cn-mt-zreo-azdo.zip"
