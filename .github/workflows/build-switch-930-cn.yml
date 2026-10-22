@@ -10,6 +10,7 @@ on:
         default: 'v9.3.0-cn'
   push:
     branches:
+      - switch-9.3.1-cn-mt
       - switch-9.3.0-cn
       - switch-9.3.0-mt-opt
 
@@ -103,7 +104,9 @@ jobs:
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
+            zip -r soh-switch-9.3.1-cn-mt.zip switch/
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             zip -r soh-switch-9.3.0-cn-mt.zip switch/
           else
             zip -r soh-switch-9.3.0-cn.zip switch/
@@ -134,12 +137,47 @@ jobs:
 
       - name: Publish Release via GitHub CLI
         run: |
-          IS_MT="false"
-          if [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
-            IS_MT="true"
-          fi
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.1-cn-mt' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.1 官方升级多线程稳定版 (含LTO/Cortex-A57/核绑定/双线程解压)"
+            ZIP_NAME="soh-switch-9.3.1-cn-mt.zip"
+            cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.1 官方升级多线程稳定版 (v9.3.1-cn-mt)
 
-          if [ "${IS_MT}" = "true" ]; then
+          本版本基于 **官方 9.3.1 (Dewey Bravo / 9.3.1-nx1)** 最新稳定内核，在**多线程初版**经过充分稳定性验证的坚实架构上构建，剔除所有后续实验性图形驱动改动，杜绝任何闪退问题：
+
+          #### 🆙 1. 官方 9.3.1 核心修复与升级全面同步：
+          - **音频 SeqPlayer 越界访问崩溃修复 (#7387)**：修复了原版音序播放器中因标记位越界访问导致的偶发性音频崩溃。
+          - **妖精捡拾系统崩溃修复 (#7340)**：根治了拾取妖精导致的游戏闪退异常。
+          - **兔耳兜帽跳跃速度限制修复 (#7419)**：修正佩戴兔耳兜帽时的跳跃速度限制器逻辑。
+          - **原版无限魔法标记机制与 GameInteractor 钩子 (#7415)**：规范魔法条消耗判定。
+          - **加农终战获胜判定与结尾字幕修复 (#7404)**：修复决战场景的胜利条件判定与多语言字幕逻辑。
+          - **LUS 官方正式合入 PR #1306 & PR #1314**：官方底层正式修复高清替换纹理脸部 UV 像素对齐（彻底解决 3D 林克面部眼嘴拉伸变形）与图像矩形 HD 缩放重置。
+
+          #### 🚀 2. 纯净多线程初版架构优化（绝对稳定）：
+          1. **全程序链接时优化 (LTO) 与 Cortex-A57 架构深度适配**：
+             - 开启 GCC/Clang 生产级 LTO (`INTERPROCEDURAL_OPTIMIZATION_RELEASE`)，跨编译单元内联与死代码消除。
+             - 针对 Tegra X1 定制 `-mtune=cortex-a57` 微架构指令调度与 `-ftree-vectorize` 自动向量化，启用 Release `-O3` 极致优化。
+          2. **ResourceManager 异步资源解压线程池扩展 (1 -> 2 线程)**：
+             - 启用双并发工作线程 (`threadCount = 2`) 加速场景流式加载。
+             - 在 `OtrArchive` 底层封装 StormLib MPQ/O2R 句柄互斥锁 (`mArchiveMutex`)，确保并发解压绝对线程安全。
+          3. **Horizon OS 物理 CPU 核心亲和性分工绑定**：
+             - **核心 0 (Core 0, 优先级 0x2B)**：专供主游戏循环与图形渲染主线程 (`Graph_ThreadEntry`)。
+             - **核心 1 (Core 1, 优先级 0x2D)**：专供 ResourceManager 异步解压线程池。
+             - **核心 2 (Core 2, 优先级 0x2A 实时级)**：专供实时音频混音与播放线程 (`OTRAudio_Thread`)。
+             - **核心 3 (Core 3)**：完全保留给 Switch Horizon OS 系统服务与蓝牙驱动。
+          4. **回归官方原生 OpenGL 渲染管线**：
+             - 移除所有实验性的着色器磁盘缓存、VAO 状态机缓存与时钟频点修改，杜绝驱动层不兼容引发的闪退。
+
+          #### 🇨🇳 3. 延续全套神游官方中文：
+          - 完整保留 iQue 官方中文对白、字库与高精 UI 材质包。
+
+          #### 📦 安装方式：
+          1. 下载 `soh-switch-9.3.1-cn-mt.zip` 并解压。
+          2. 将解压得到的 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian。
+          EOF
+          elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.0-cn-mt' }}"
             RELEASE_TITLE="Ship of Harkinian Switch v9.3.0 多线程CPU性能优化版 (含LTO/Cortex-A57/核绑定)"
             ZIP_NAME="soh-switch-9.3.0-cn-mt.zip"
