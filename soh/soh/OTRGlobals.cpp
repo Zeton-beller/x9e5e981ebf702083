@@ -83,6 +83,7 @@
 #include "Enhancements/Restorations/GetItemManipulation.h"
 #include "Enhancements/Lang/Lang.h"
 #include "soh/SohGui/ImGuiUtils.h"
+#include "soh/SohGui/SohMenuLocalization.h"
 #include "ActorDB.h"
 #include "SaveManager.h"
 #include "soh/Network/CrowdControl/CrowdControl.h"
@@ -1970,6 +1971,13 @@ ImFont* OTRGlobals::CreateFontWithSize(float size, std::string fontPath, bool is
     iconsConfig.GlyphMinAdvanceX = iconFontSize;
     mImGuiIo->Fonts->AddFontFromMemoryCompressedBase85TTF(fontawesome_compressed_data_base85, iconFontSize,
                                                           &iconsConfig, sIconsRanges);
+#ifdef __SWITCH__
+    if (!isJapaneseFont && size >= 16.0f &&
+        !(fontPath.find("Montserrat") != std::string::npos && size < 18.0f)) {
+        Ship::Switch::ImGuiMergeChineseFont(mImGuiIo->Fonts, size,
+                                            SohGui::GetChineseFontGlyphRanges(mImGuiIo->Fonts));
+    }
+#endif
     return font;
 }
 

@@ -11,6 +11,7 @@
 #include "soh/ShipUtils.h"
 #include "soh/SohGui/SohGui.hpp"
 #include "soh/SohGui/UIWidgets.hpp"
+#include "soh/SohGui/SohMenuLocalization.h"
 
 extern "C" {
 #include "variables.h"
@@ -151,12 +152,12 @@ void DrawLocationsMenu(WidgetInfo& info) {
 
     static ImGuiTextFilter locationSearch;
     UIWidgets::PushStyleInput(THEME_COLOR);
-    locationSearch.Draw("Filter (inc,-exc)", 490.0f);
+    locationSearch.Draw("过滤 (包含,-排除)", 490.0f);
     UIWidgets::PopStyleInput();
 
     if (ImGui::BeginTable("tableRandoLocations", 2, ImGuiTableFlags_BordersH | ImGuiTableFlags_BordersV)) {
-        ImGui::TableSetupColumn("Included", ImGuiTableColumnFlags_WidthStretch, 200.0f);
-        ImGui::TableSetupColumn("Excluded", ImGuiTableColumnFlags_WidthStretch, 200.0f);
+        ImGui::TableSetupColumn("已包含", ImGuiTableColumnFlags_WidthStretch, 200.0f);
+        ImGui::TableSetupColumn("已排除", ImGuiTableColumnFlags_WidthStretch, 200.0f);
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
         ImGui::TableHeadersRow();
         ImGui::PopItemFlag();
@@ -166,21 +167,21 @@ void DrawLocationsMenu(WidgetInfo& info) {
         ImGui::TableNextColumn();
         // window->DC.CurrLineTextBaseOffset = 0.0f;
 
-        if (UIWidgets::Button("Collapse All##included",
+        if (UIWidgets::Button("全部收起##included",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (int i = 0; i < RCAREA_INVALID; i++) {
                 areaTreeIncluded.erase(static_cast<RandomizerCheckArea>(i));
             }
         }
         ImGui::SameLine();
-        if (UIWidgets::Button("Open All##included",
+        if (UIWidgets::Button("全部展开##included",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (int i = 0; i < RCAREA_INVALID; i++) {
                 areaTreeIncluded.insert(static_cast<RandomizerCheckArea>(i));
             }
         }
         ImGui::SameLine();
-        if (UIWidgets::Button("Exclude Visible",
+        if (UIWidgets::Button("排除当前可见项",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (auto& [rcArea, locations] : RandomizerCheckObjects::GetAllRCObjectsByArea()) {
                 if (!areaTreeIncluded.contains(rcArea)) {
@@ -209,7 +210,7 @@ void DrawLocationsMenu(WidgetInfo& info) {
             }
 
             if (hasItems) {
-                std::string areaLabel = RandomizerCheckObjects::GetRCAreaName(rcArea) + "##included";
+                std::string areaLabel = SohGui::TranslateOption(RandomizerCheckObjects::GetRCAreaName(rcArea)) + "##included";
                 ImGui::TreeNodeSetOpen(ImGui::GetID(areaLabel.c_str()), areaTreeIncluded.contains(rcArea));
                 ImGui::SetNextItemOpen(true, ImGuiCond_Once);
                 if (ImGui::TreeNode(areaLabel.c_str())) {
@@ -239,21 +240,21 @@ void DrawLocationsMenu(WidgetInfo& info) {
         ImGui::TableNextColumn();
         // window->DC.CurrLineTextBaseOffset = 0.0f;
 
-        if (UIWidgets::Button("Collapse All##excluded",
+        if (UIWidgets::Button("全部收起##excluded",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (int i = 0; i < RCAREA_INVALID; i++) {
                 areaTreeExcluded.erase(static_cast<RandomizerCheckArea>(i));
             }
         }
         ImGui::SameLine();
-        if (UIWidgets::Button("Open All##excluded",
+        if (UIWidgets::Button("全部展开##excluded",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (int i = 0; i < RCAREA_INVALID; i++) {
                 areaTreeExcluded.insert(static_cast<RandomizerCheckArea>(i));
             }
         }
         ImGui::SameLine();
-        if (UIWidgets::Button("Include Visible",
+        if (UIWidgets::Button("包含当前可见项",
                               UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
             for (auto& [rcArea, locations] : RandomizerCheckObjects::GetAllRCObjectsByArea()) {
                 if (!areaTreeExcluded.contains(rcArea)) {
@@ -282,7 +283,7 @@ void DrawLocationsMenu(WidgetInfo& info) {
             }
 
             if (hasItems) {
-                std::string areaLabel = RandomizerCheckObjects::GetRCAreaName(rcArea) + "##excluded";
+                std::string areaLabel = SohGui::TranslateOption(RandomizerCheckObjects::GetRCAreaName(rcArea)) + "##excluded";
                 ImGui::TreeNodeSetOpen(ImGui::GetID(areaLabel.c_str()), areaTreeExcluded.contains(rcArea));
                 ImGui::SetNextItemOpen(true, ImGuiCond_Once);
                 if (ImGui::TreeNode(areaLabel.c_str())) {
@@ -443,11 +444,11 @@ void DrawTricksMenu(WidgetInfo& info) {
 
     static ImGuiTextFilter trickSearch;
     UIWidgets::PushStyleInput(THEME_COLOR);
-    trickSearch.Draw("Filter (inc,-exc)", 490.0f);
+    trickSearch.Draw("筛选关键词 (包含,-排除)", 490.0f);
     UIWidgets::PopStyleInput();
     if (CVarGetInteger(CVAR_RANDOMIZER_SETTING("NoLogic"), RO_GENERIC_OFF) == RO_GENERIC_OFF) {
         ImGui::SameLine();
-        if (UIWidgets::Button("Disable All", UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(250.f, 0.f)))) {
+        if (UIWidgets::Button("全部禁用", UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(250.f, 0.f)))) {
             for (int i = 0; i < RT_MAX; i++) {
                 auto etfound = enabledTricks.find(static_cast<RandomizerTrick>(i));
                 if (etfound != enabledTricks.end()) {
@@ -457,7 +458,7 @@ void DrawTricksMenu(WidgetInfo& info) {
             SaveEnabledTricks();
         }
         ImGui::SameLine();
-        if (UIWidgets::Button("Enable All", UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(250.f, 0.f)))) {
+        if (UIWidgets::Button("全部启用", UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(250.f, 0.f)))) {
             for (int i = 0; i < RT_MAX; i++) {
                 if (!enabledTricks.count(static_cast<RandomizerTrick>(i))) {
                     enabledTricks.insert(static_cast<RandomizerTrick>(i));
@@ -476,15 +477,15 @@ void DrawTricksMenu(WidgetInfo& info) {
                 ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 1.0f, 1.0f, 1.0f });
             }
             ImGui::PushStyleColor(ImGuiCol_Header, Rando::Tricks::GetTagColor(rtTag));
-            ImGui::Selectable(Rando::Tricks::GetTagName(rtTag).c_str(), &showTag[rtTag]);
+            ImGui::Selectable(SohGui::TranslateWidgetName(Rando::Tricks::GetTagName(rtTag)).c_str(), &showTag[rtTag]);
             ImGui::PopStyleColor(2);
         }
         ImGui::EndTable();
     }
 
     if (ImGui::BeginTable("tableRandoTricks", 2, ImGuiTableFlags_BordersH | ImGuiTableFlags_BordersV)) {
-        ImGui::TableSetupColumn("Disabled Tricks", ImGuiTableColumnFlags_WidthStretch, 200.0f);
-        ImGui::TableSetupColumn("Enabled Tricks", ImGuiTableColumnFlags_WidthStretch, 200.0f);
+        ImGui::TableSetupColumn("未启用的技巧", ImGuiTableColumnFlags_WidthStretch, 200.0f);
+        ImGui::TableSetupColumn("已启用的技巧", ImGuiTableColumnFlags_WidthStretch, 200.0f);
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
         ImGui::TableHeadersRow();
         ImGui::PopItemFlag();
@@ -495,21 +496,21 @@ void DrawTricksMenu(WidgetInfo& info) {
             ImGui::TableNextColumn();
             // window->DC.CurrLineTextBaseOffset = 0.0f;
 
-            if (UIWidgets::Button("Collapse All##disabled",
+            if (UIWidgets::Button("全部折叠##disabled",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RA_MAX; i++) {
                     areaTreeDisabled.erase(static_cast<RandomizerArea>(i));
                 }
             }
             ImGui::SameLine();
-            if (UIWidgets::Button("Open All##disabled",
+            if (UIWidgets::Button("全部展开##disabled",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RA_MAX; i++) {
                     areaTreeDisabled.insert(static_cast<RandomizerArea>(i));
                 }
             }
             ImGui::SameLine();
-            if (UIWidgets::Button("Enable Visible",
+            if (UIWidgets::Button("启用当前可见项",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RT_MAX; i++) {
                     auto option = randoSettings->GetTrickSetting(static_cast<RandomizerTrick>(i));
@@ -536,7 +537,7 @@ void DrawTricksMenu(WidgetInfo& info) {
                     }
                 }
                 if (hasTricks) {
-                    std::string areaLabel = Rando::Tricks::GetAreaName(area) + "##disabled";
+                    std::string areaLabel = SohGui::TranslateWidgetName(Rando::Tricks::GetAreaName(area)) + "##disabled";
                     ImGui::TreeNodeSetOpen(ImGui::GetID(areaLabel.c_str()), areaTreeDisabled.contains(area));
                     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
                     if (ImGui::TreeNode(areaLabel.c_str())) {
@@ -552,8 +553,8 @@ void DrawTricksMenu(WidgetInfo& info) {
                                 UIWidgets::PopStyleButton();
                                 Rando::Tricks::DrawTagChips(option.GetTags(), option.GetName());
                                 ImGui::SameLine();
-                                ImGui::Text("%s", option.GetName().c_str());
-                                UIWidgets::Tooltip(option.GetDescription());
+                                ImGui::Text("%s", SohGui::TranslateWidgetName(option.GetName()).c_str());
+                                UIWidgets::Tooltip(SohGui::TranslateTooltip(option.GetDescription()));
                             }
                         }
                         areaTreeDisabled.insert(area);
@@ -569,21 +570,21 @@ void DrawTricksMenu(WidgetInfo& info) {
             ImGui::TableNextColumn();
             // window->DC.CurrLineTextBaseOffset = 0.0f;
 
-            if (UIWidgets::Button("Collapse All##enabled",
+            if (UIWidgets::Button("全部折叠##enabled",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RA_MAX; i++) {
                     areaTreeEnabled.erase(static_cast<RandomizerArea>(i));
                 }
             }
             ImGui::SameLine();
-            if (UIWidgets::Button("Open All##enabled",
+            if (UIWidgets::Button("全部展开##enabled",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RA_MAX; i++) {
                     areaTreeEnabled.insert(static_cast<RandomizerArea>(i));
                 }
             }
             ImGui::SameLine();
-            if (UIWidgets::Button("Disable Visible",
+            if (UIWidgets::Button("禁用当前可见项",
                                   UIWidgets::ButtonOptions().Color(THEME_COLOR).Size(ImVec2(0.f, 0.f)))) {
                 for (int i = 0; i < RT_MAX; i++) {
                     auto option = randoSettings->GetTrickSetting(static_cast<RandomizerTrick>(i));
@@ -610,7 +611,7 @@ void DrawTricksMenu(WidgetInfo& info) {
                     }
                 }
                 if (hasTricks) {
-                    std::string areaLabel = Rando::Tricks::GetAreaName(area) + "##enabled";
+                    std::string areaLabel = SohGui::TranslateWidgetName(Rando::Tricks::GetAreaName(area)) + "##enabled";
                     ImGui::TreeNodeSetOpen(ImGui::GetID(areaLabel.c_str()), areaTreeEnabled.contains(area));
                     ImGui::SetNextItemOpen(true, ImGuiCond_Once);
                     if (ImGui::TreeNode(areaLabel.c_str())) {
@@ -626,8 +627,8 @@ void DrawTricksMenu(WidgetInfo& info) {
                                 UIWidgets::PopStyleButton();
                                 Rando::Tricks::DrawTagChips(option.GetTags(), option.GetName());
                                 ImGui::SameLine();
-                                ImGui::Text("%s", option.GetName().c_str());
-                                UIWidgets::Tooltip(option.GetDescription());
+                                ImGui::Text("%s", SohGui::TranslateWidgetName(option.GetName()).c_str());
+                                UIWidgets::Tooltip(SohGui::TranslateTooltip(option.GetDescription()));
                             }
                         }
                         areaTreeEnabled.insert(area);

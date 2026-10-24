@@ -8,6 +8,7 @@
 #include "Menu.h"
 #include "BackendTypes.h"
 #include "UIWidgets.hpp"
+#include "SohMenuLocalization.h"
 #include "soh/Enhancements/speedrun/Speedrun.h"
 #include "soh/OTRGlobals.h"
 #include "SohModals.h"
@@ -245,7 +246,8 @@ uint32_t Menu::DrawSearchResults(std::string& menuSearchText) {
                             MenuDrawItem(info, menuThemeIndex);
                             ImGui::PushStyleColor(ImGuiCol_Text, UIWidgets::ColorValues.at(UIWidgets::Colors::Gray));
                             std::string origin =
-                                spdlog::fmt_lib::format("  ({} -> {}, Col {})", menuEntry.label, sidebarLabel, i + 1);
+                                spdlog::fmt_lib::format("  ({} -> {}, Col {})", SohGui::TranslateHeader(menuEntry.label),
+                                                        SohGui::TranslateSidebar(sidebarLabel), i + 1);
                             ImGui::Text("%s", origin.c_str());
                             ImGui::PopStyleColor();
                             searchCount++;
@@ -273,7 +275,9 @@ uint32_t Menu::DrawSearchResults(std::string& menuSearchText) {
                 MenuDrawItem(entry.info, menuThemeIndex);
                 ImGui::PushStyleColor(ImGuiCol_Text, UIWidgets::ColorValues.at(UIWidgets::Colors::Gray));
                 std::string origin =
-                    spdlog::fmt_lib::format("  ({} -> {}, {})", entry.menuName, entry.sidebarName, entry.location);
+                    spdlog::fmt_lib::format("  ({} -> {}, {})", SohGui::TranslateHeader(entry.menuName),
+                                            SohGui::TranslateSidebar(entry.sidebarName),
+                                            SohGui::TranslateOption(entry.location));
                 ImGui::Text("%s", origin.c_str());
                 ImGui::PopStyleColor();
                 searchCount++;
@@ -320,6 +324,21 @@ void Menu::MenuDrawItem(WidgetInfo& widget, UIWidgets::Colors menuThemeIndex) {
         widget.options->disabled = true;
         disabledTempTooltip += std::string("\n- Race Lockout Active");
         widget.options->disabledTooltip = disabledTempTooltip.c_str();
+    }
+
+    if (widget.options != nullptr && SohGui::IsMenuLocalizationEnabled()) {
+        if (!widget.options->tooltip.empty()) {
+            widget.options->tooltip = SohGui::TranslateTooltip(widget.options->tooltip);
+        }
+        if (!widget.options->disabledTooltip.empty()) {
+            widget.options->disabledTooltip = SohGui::TranslateTooltip(widget.options->disabledTooltip);
+        }
+        if (widget.type == WIDGET_CVAR_SLIDER_INT || widget.type == WIDGET_SLIDER_INT) {
+            auto sliderOpts = std::static_pointer_cast<UIWidgets::IntSliderOptions>(widget.options);
+            if (sliderOpts && sliderOpts->format != nullptr) {
+                sliderOpts->format = SohGui::TranslateComboOption(sliderOpts->format);
+            }
+        }
     }
 
     if (widget.sameLine) {
@@ -534,7 +553,7 @@ void Menu::MenuDrawItem(WidgetInfo& widget, UIWidgets::Colors menuThemeIndex) {
             } break;
             case WIDGET_SEARCH: {
                 UIWidgets::PushStyleButton(menuThemeIndex);
-                if (ImGui::Button("Clear")) {
+                if (ImGui::Button("清空")) {
                     menuSearch.Clear();
                 }
                 ImGui::SameLine();
@@ -552,7 +571,7 @@ void Menu::MenuDrawItem(WidgetInfo& widget, UIWidgets::Colors menuThemeIndex) {
                 std::string menuSearchText(menuSearch.InputBuf);
 
                 if (menuSearchText == "") {
-                    ImGui::Text("Start typing to see results.");
+                    ImGui::Text("输入关键词以搜索配置项...");
                     return;
                 }
                 DrawSearchResults(menuSearchText);
@@ -681,7 +700,7 @@ void Menu::DrawElement() {
         headerWidth += 200.0f;
     }
     for (auto& label : menuOrder) {
-        ImVec2 size = ImGui::CalcTextSize(label.c_str());
+        ImVec2 size = ImGui::CalcTextSize(SohGui::TranslateHeader(label).c_str());
         headerSizes.push_back(size);
         headerWidth += size.x + style.FramePadding.x * 2 + style.ItemSpacing.x;
     }
@@ -731,7 +750,7 @@ void Menu::DrawElement() {
         if (headerIndex != label) {
             ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
         }
-        if (ModernMenuHeaderEntry(entry.label)) {
+        if (ModernMenuHeaderEntry(SohGui::TranslateHeader(entry.label))) {
             if (headerSearch) {
                 menuSearch.Clear();
             }
@@ -769,7 +788,7 @@ void Menu::DrawElement() {
         menuSearchText.erase(std::remove(menuSearchText.begin(), menuSearchText.end(), ' '), menuSearchText.end());
         if (menuSearchText.length() < 1) {
             ImGui::SameLine(headerWidth - 200.0f + style.ItemSpacing.x);
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 0.4f), "Search...");
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 0.4f), "搜索设置项...");
         }
         ImGui::PopStyleVar();
         ImGui::PopStyleColor();
@@ -779,10 +798,10 @@ void Menu::DrawElement() {
     UIWidgets::ButtonOptions options3 = {};
     options3.color = UIWidgets::Colors::Red;
     options3.size = UIWidgets::Sizes::Inline;
-    options3.tooltip = "Quit SoH";
+    options3.tooltip = "退出游戏";
     if (UIWidgets::Button(ICON_FA_POWER_OFF, options3)) {
         SohGui::mModalWindow->RegisterPopup(
-            "Quit SoH", "Are you sure you want to quit SoH?", "Quit", "Cancel",
+            "退出游戏", "确定要退出时光之笛 (SoH) 吗？", "退出", "取消",
             []() {
                 std::shared_ptr<Menu> menu =
                     static_pointer_cast<Menu>(Ship::Context::GetRawInstance()->GetWindow()->GetGui()->GetMenu());
@@ -798,7 +817,7 @@ void Menu::DrawElement() {
     UIWidgets::ButtonOptions options2 = {};
     options2.color = UIWidgets::Colors::Red;
     options2.size = UIWidgets::Sizes::Inline;
-    options2.tooltip = "Reset"
+    options2.tooltip = "重置游戏"
 #ifdef __APPLE__
                        " (Command-R)"
 #elif !defined(__SWITCH__) && !defined(__WIIU__)
@@ -815,7 +834,7 @@ void Menu::DrawElement() {
     ImGui::SameLine();
     UIWidgets::ButtonOptions options = {};
     options.size = UIWidgets::Sizes::Inline;
-    options.tooltip = "Close Menu (Esc)";
+    options.tooltip = "关闭设置菜单 (-)";
     if (UIWidgets::Button(ICON_FA_TIMES_CIRCLE, options)) {
         ToggleVisibility();
 
@@ -861,7 +880,7 @@ void Menu::DrawElement() {
         if (sectionIndex != sidebarLabel) {
             ImGui::PushStyleColor(ImGuiCol_Button, { 0, 0, 0, 0 });
         }
-        if (ModernMenuSidebarEntry(sidebarLabel)) {
+        if (ModernMenuSidebarEntry(SohGui::TranslateSidebar(sidebarLabel))) {
             if (headerSearch) {
                 menuSearch.Clear();
             }
@@ -903,12 +922,12 @@ void Menu::DrawElement() {
     if (headerSearch && menuSearchText.length() > 0) {
         ImGui::AlignTextToFramePadding();
         ImGui::PushFont(OTRGlobals::Instance->fontMonoLargest);
-        ImGui::Text("Search Results");
+        ImGui::Text("搜索结果");
         ImGui::PopFont();
         ImGui::SameLine();
         UIWidgets::ButtonOptions clearBtnOpts = {};
         clearBtnOpts.size = UIWidgets::Sizes::Inline;
-        if (UIWidgets::Button("Clear Search", clearBtnOpts)) {
+        if (UIWidgets::Button("清除搜索", clearBtnOpts)) {
             menuSearch.Clear();
         }
         ImGui::BeginChild("searchSeparator", ImVec2(ImGui::GetContentRegionAvail().x / 2, 20),
@@ -917,9 +936,9 @@ void Menu::DrawElement() {
         ImGui::EndChild();
         uint32_t searchCount = DrawSearchResults(menuSearchText);
         if (searchCount == 0) {
-            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("No results found").x) / 2);
+            ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize("未找到匹配结果").x) / 2);
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 0.4f), "No results found");
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 0.4f), "未找到匹配结果");
         }
     } else {
         std::string menuLabel = menuEntries.at(headerIndex).label;

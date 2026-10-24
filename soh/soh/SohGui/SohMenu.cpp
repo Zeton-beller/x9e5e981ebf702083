@@ -2,6 +2,7 @@
 #include <ship/Context.h>
 
 #include "SohMenu.h"
+#include "SohMenuLocalization.h"
 
 extern "C" {
 extern PlayState* gPlayState;
@@ -97,6 +98,8 @@ void SohMenu::AddMenuElements() {
     for (auto& initFunc : MenuInit::GetInitFuncs()) {
         initFunc();
     }
+
+    ApplySohMenuLocalization(menuEntries);
 
     mMenuElementsInitialized = true;
 }

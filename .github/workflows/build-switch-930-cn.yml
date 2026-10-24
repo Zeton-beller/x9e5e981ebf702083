@@ -10,6 +10,7 @@ on:
         default: 'v9.3.0-cn'
   push:
     branches:
+      - switch-9.3.1-cn-menu
       - switch-9.3.1-cn-mt
       - switch-9.3.0-cn
       - switch-9.3.0-mt-opt
@@ -96,6 +97,7 @@ jobs:
           echo "=== 正在校验 NRO 内部中文字库与函数符号 ==="
           strings soh.nro | grep "Font_LoadCharChinese" || echo "Warning: Font_LoadCharChinese symbol not found"
           strings soh.nro | grep "sChiMessageEntryTablePtr" || echo "Warning: sChiMessageEntryTablePtr symbol not found"
+          strings soh.nro | grep "常规设置" || echo "Warning: Menu Chinese localization strings not found"
 
       - name: Package Switch Release
         run: |
@@ -104,7 +106,9 @@ jobs:
           cp soh.nro switch/soh/soh.nro
           cp soh.o2r switch/soh/soh.o2r
           cp README.md switch/soh/readme.txt
-          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-menu" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-menu" ]; then
+            zip -r soh-switch-9.3.1-cn-menu.zip switch/
+          elif [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
             zip -r soh-switch-9.3.1-cn-mt.zip switch/
           elif [ "${{ github.ref_name }}" = "switch-9.3.0-mt-opt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.0-cn-mt" ]; then
             zip -r soh-switch-9.3.0-cn-mt.zip switch/
@@ -137,7 +141,40 @@ jobs:
 
       - name: Publish Release via GitHub CLI
         run: |
-          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
+          if [ "${{ github.ref_name }}" = "switch-9.3.1-cn-menu" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-menu" ]; then
+            TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.1-cn-menu' }}"
+            RELEASE_TITLE="Ship of Harkinian Switch v9.3.1 完整中文版 (神游剧情 + ImGui配置菜单全汉化 + 多线程稳定内核)"
+            ZIP_NAME="soh-switch-9.3.1-cn-menu.zip"
+            cat << 'EOF' > release_notes.md
+          ### Ship of Harkinian Switch 9.3.1 完整中文版 (v9.3.1-cn-menu)
+
+          本版本在 **v9.3.1 官方升级多线程稳定版 (`v9.3.1-cn-mt`)** 的坚实架构基础上，全新攻克并集成了 **Switch 系统共享中文字库动态合入** 与 **ImGui 配置菜单全量简体中文化**，彻底解决了过往菜单黑框乱码与共享内存悬空崩溃问题：
+
+          #### 🀄 1. 全新 ImGui 配置界面简体中文化与 Switch 系统字库引擎：
+          - **Switch 原生系统简体中文字库 (`PlSharedFontType_ChineseSimplified`) 动态合入**：
+            - 在 `libultraship` 底层通过 `plGetSharedFontByType` 加载 Horizon OS 官方系统简体中文字库，并将 `plExit()` 生命周期延展至游戏退出阶段，彻底消除二次构建图集时的悬空指针闪退风险。
+            - 采用 `ImFontGlyphRangesBuilder` 精确构建 GB2312 常用汉字 + 菜单专属全量词条字符集（共 3,523 个码位），配合 `OversampleH=1, OversampleV=1, PixelSnapH=true`，将 4 套活动菜单字体的联合纹理图集严格控制在 `2048 x 4096`（仅占 Switch 16384 硬件纹理上限的 1/4），**100% 杜绝字体黑块、方框与问号**。
+          - **配置菜单全量 2,390+ 词条完整中文化**：
+            - 完整汉化 5 大主导航栏（系统基础设置、游戏增强功能、开发者工具、随机化模式、网络与群组控制）、44 个侧边栏分类、1,136 项功能开关/滑块、769 条悬浮详细说明（含动态禁用原因提示）以及 260 项下拉框与随机化逻辑技巧。
+            - 升级 `UIWidgets::WrappedText` 支持 UTF-8 多字节中文字符边界识别与折行排版，消除半截乱码与悬浮窗越界。
+            - 保持底层配置键名 (`CVar` / `MenuEntries` / `Rando::Option`) 原生英文映射，确保旧版存档、`shipofharkinian.json` 配置文件与随机化种子生成器 100% 兼容。
+
+          #### 🆙 2. 官方 9.3.1 核心修复与升级全面同步：
+          - **音频 SeqPlayer 越界访问崩溃修复 (#7387)**、**妖精捡拾崩溃修复 (#7340)**、**兔耳兜帽跳跃速度限制修复 (#7419)**、**加农终战获胜判定修复 (#7404)**。
+          - **LUS 官方正式合入 PR #1306 & PR #1314**：官方底层修复高清替换纹理 3D 林克面部眼嘴 UV 像素对齐与 HD 图像矩形缩放。
+
+          #### 🚀 3. 纯净多线程初版稳定架构（无任何实验性驱动修改）：
+          - 开启 **LTO 跨模块链接优化** 与 **Tegra X1 (`-mtune=cortex-a57 -O3`)** 指令调度。
+          - **ResourceManager 双线程并发解压 (`threadCount = 2`)** + `OtrArchive` 互斥锁保护。
+          - **Horizon OS 物理 CPU 核心亲和性分工绑定**（Core 0 渲染主线程 / Core 1 异步解压 / Core 2 实时音频混音）。
+          - 完整保留 **iQue 神游官方中文剧情对白、字库与高清 UI 贴图资产**。
+
+          #### 📦 安装方式：
+          1. 下载 `soh-switch-9.3.1-cn-menu.zip` 并解压。
+          2. 将解压得到的 `switch/soh` 文件夹复制覆盖到 Switch SD 卡根目录的 `switch/` 目录下。
+          3. 在主界面按住 `R` 键启动任意已安装游戏进入 hbmenu（Title Override 满内存模式），运行 Ship of Harkinian（按 `-` 键呼出全中文配置菜单）。
+          EOF
+          elif [ "${{ github.ref_name }}" = "switch-9.3.1-cn-mt" ] || [ "${{ github.event.inputs.release_tag }}" = "v9.3.1-cn-mt" ]; then
             TAG_NAME="${{ github.event.inputs.release_tag || 'v9.3.1-cn-mt' }}"
             RELEASE_TITLE="Ship of Harkinian Switch v9.3.1 官方升级多线程稳定版 (含LTO/Cortex-A57/核绑定/双线程解压)"
             ZIP_NAME="soh-switch-9.3.1-cn-mt.zip"

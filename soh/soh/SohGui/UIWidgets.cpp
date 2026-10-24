@@ -21,28 +21,75 @@ void CVarChanged(const char* cvarName) {
 // Manually included newlines will still be respected and reset the line length
 // If line is midword when it hits the limit, text should break at the last encountered space
 std::string WrappedText(const char* text, unsigned int charactersPerLine) {
-    std::string newText(text);
-    const size_t tipLength = newText.length();
-    int lastSpace = -1;
-    unsigned int currentLineLength = 0;
-    for (unsigned int currentCharacter = 0; currentCharacter < tipLength; currentCharacter++) {
-        if (newText[currentCharacter] == '\n') {
-            currentLineLength = 0;
-            lastSpace = -1;
+    if (text == nullptr) {
+        return "";
+    }
+    std::string out;
+    out.reserve(strlen(text) + 32);
+    unsigned int lineCols = 0;
+    int lastBreakPos = -1;
+    unsigned int colsSinceBreak = 0;
+
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(text);
+    while (*p) {
+        if (*p == '\n') {
+            out.push_back('\n');
+            lineCols = 0;
+            lastBreakPos = -1;
+            colsSinceBreak = 0;
+            p++;
             continue;
-        } else if (newText[currentCharacter] == ' ') {
-            lastSpace = currentCharacter;
+        }
+        int seqLen = 1;
+        if ((*p & 0x80) == 0) {
+            seqLen = 1;
+        } else if ((*p & 0xE0) == 0xC0) {
+            seqLen = 2;
+        } else if ((*p & 0xF0) == 0xE0) {
+            seqLen = 3;
+        } else if ((*p & 0xF8) == 0xF0) {
+            seqLen = 4;
+        }
+        for (int i = 1; i < seqLen; i++) {
+            if ((p[i] & 0xC0) != 0x80) {
+                seqLen = 1;
+                break;
+            }
         }
 
-        if ((currentLineLength >= charactersPerLine) && (lastSpace >= 0)) {
-            newText[lastSpace] = '\n';
-            currentLineLength = currentCharacter - lastSpace - 1;
-            lastSpace = -1;
+        bool isSpace = (seqLen == 1 && *p == ' ');
+        bool isCjk = (seqLen >= 3);
+        unsigned int charWidth = isCjk ? 2 : 1;
+
+        if (isSpace) {
+            lastBreakPos = static_cast<int>(out.size());
+            colsSinceBreak = 0;
         }
-        currentLineLength++;
+
+        out.append(reinterpret_cast<const char*>(p), seqLen);
+        lineCols += charWidth;
+        colsSinceBreak += charWidth;
+
+        if (isCjk) {
+            lastBreakPos = static_cast<int>(out.size());
+            colsSinceBreak = 0;
+        }
+
+        if (lineCols >= charactersPerLine && lastBreakPos > 0) {
+            if (out[lastBreakPos] == ' ') {
+                out[lastBreakPos] = '\n';
+                lineCols = colsSinceBreak;
+            } else {
+                out.insert(lastBreakPos, 1, '\n');
+                lineCols = colsSinceBreak;
+            }
+            lastBreakPos = -1;
+        }
+
+        p += seqLen;
     }
 
-    return newText;
+    return out;
 }
 
 std::string WrappedText(const std::string& text, unsigned int charactersPerLine) {
